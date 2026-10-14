@@ -19,10 +19,15 @@
         define('BASE_URL', ($base === '.' || $base === '/') ? '' : $base);
     }
 
-    $host = "localhost";
-    $user = "root";
-    $pass = "";
-    $name = "game_db";
+    // Configurações do Banco de Dados na Nuvem (Alwaysdata)
+    $host = "mysql-pijogo2026.alwaysdata.net";
+    $user = "pijogo2026";
+    $pass = "Rayne147585**";
+    $name = "pijogo2026_game_db";
 
     $conn = new mysqli($host, $user, $pass, $name);
+
+    if ($conn->connect_error) {
+        die("Erro ao conectar ao banco de dados na nuvem: " . $conn->connect_error);
+    }
 ?>
