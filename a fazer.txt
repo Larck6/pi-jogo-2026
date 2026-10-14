@@ -1,0 +1,38 @@
+FEITO
+nome fixado em cima
+limitar feedback para 1 pessoa
+nota 1 a 5
+imagem do blz
+trocar id usuario por nome
+filtrar feedbacks
+ESTRELAS NA TABELA
+NAO APARECER DUAS VEZES NA TABELA
+REDIRECIONAR PARA OS LUGARES CERTOS
+AREA PARA COMUNIDADE
+capturas de tela
+videos
+esconder comentarios
+colocar estrela no editar de tudo
+poder comentar em 2 fotos
+limitar feedback para 1 pessoa
+Editar/excluir imagens
+editar e excluir videos e fotos
+discussões
+tudo
+adm
+banco de dados de cada pagina
+sobre
+mecanicas
+atualizações
+ADM PARA ADICIONAR COISAS
+MELHORAR CODIGO COM INCLUDES
+logado para download
+
+
+HTML
+mecanicas
+atualizações
+sobre
+parte das lendas
+descrição dos personagens
+criação do jogo
