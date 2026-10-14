@@ -22,3 +22,7 @@ desktop.ini
 *.rar
 *.7z
 *.bak
+
+# Arquivo local com senhas e credenciais (NÃO subir para o GitHub)
+credenciais_*.txt
+*.secret
