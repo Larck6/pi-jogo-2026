@@ -17,10 +17,13 @@
             $nomeArquivo = $arquivo['name'];
             $tmp = $arquivo['tmp_name'];
 
-            $pastaFisico = "C:/wamp64/www/pi/img/";
+            $pastaFisico = dirname(__DIR__) . "/img/";
+            if (!is_dir($pastaFisico)) {
+                mkdir($pastaFisico, 0755, true);
+            }
             $caminhoFisico = $pastaFisico . $nomeArquivo;
 
-            $pastaURL = "/pi/img/";
+            $pastaURL = "../img/";
             $caminhoURL = $pastaURL . $nomeArquivo;
 
             move_uploaded_file($tmp, $caminhoFisico);

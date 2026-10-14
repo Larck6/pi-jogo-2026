@@ -24,7 +24,7 @@
     <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post">
         <input type="text" name="nome" placeholder="Nome">
         <input type="text" name="email" placeholder="E-mail">
-        <input type="text" name="senha" placeholder="Senha">
+        <input type="password" name="senha" placeholder="Senha" required>
         <button type="submit">Enviar</button>
         <a href="/pi/pages/login.php">Fazer login</a>
     </form>

@@ -4,8 +4,8 @@ session_start();
 // Nome do arquivo
 $arquivo = "mito22.jpg";
 
-// Caminho absoluto do arquivo
-$caminho = $_SERVER['DOCUMENT_ROOT'] . "/pi/jogo/" . $arquivo;
+// Caminho absoluto do arquivo de forma dinâmica
+$caminho = dirname(__DIR__) . "/jogo/" . $arquivo;
 
 // Verifica se o arquivo existe
 if (!file_exists($caminho)) {
