@@ -2,47 +2,27 @@
     include "../include/conexao.php";
     include "../include/id.php";
     include "../include/login_php.php";
+    require_login();
 
-    $sql = $conn->query("SELECT * FROM imagens WHERE pk_id_imagem = '$idImagem'");
+    $idImagem = (int) $idImagem;
+    $sql = db_stmt($conn, 'SELECT * FROM imagens WHERE pk_id_imagem = ? AND fk_id_user = ?', 'ii', $idImagem, $idUser)->get_result();
 
     $dados = $sql->fetch_assoc();
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-        $imagem = $_POST['nome'] ?? '';
-
-        $arquivo = $_FILES['imagem'];
-        $nomeArquivo = $arquivo['name'];
-        $tmp = $arquivo['tmp_name'];
-
-        $pastaFisico = dirname(__DIR__) . "/img/";
-        if (!is_dir($pastaFisico)) {
-            mkdir($pastaFisico, 0755, true);
+        $imagem = trim($_POST['nome'] ?? '') ?: $dados['nome_imagem'];
+        $caminhoURL = $dados['caminho'];
+        if (isset($_FILES['imagem']) && $_FILES['imagem']['error'] !== UPLOAD_ERR_NO_FILE) {
+            $novo = store_upload($_FILES['imagem'], 'capturas', 'image');
+            delete_uploaded_file($caminhoURL);
+            $caminhoURL = $novo;
         }
-        $caminhoFisico = $pastaFisico . $nomeArquivo;
-
-        $pastaURL = "../img/";
-        $caminhoURL = $pastaURL . $nomeArquivo;
-
-        move_uploaded_file($tmp, $caminhoFisico);
-
-        if ($feedback == '') {
-            $feedback = $dados['nome_imagem'];
-        }
-
-        if ($caminhoURL == '') {
-            $caminhoURL = $dados['caminho'];
-        }
-
-        $update = "UPDATE imagens SET nome_imagem = '$imagem', caminho = '$caminhoURL' WHERE pk_id_imagem = '$idImagem' AND fk_id_user = '$idUser'";
-
-        if ($conn->query($update)) {
-            header("Location: /pi/pages/capturas.php");
-            exit;
-        }
+        db_stmt($conn, 'UPDATE imagens SET nome_imagem = ?, caminho = ? WHERE pk_id_imagem = ? AND fk_id_user = ?', 'ssii', $imagem, $caminhoURL, $idImagem, $idUser);
+        redirect_to('/pages/capturas.php');
     }
     // SELECT IMAGENS
-    $img = $conn->query("SELECT * FROM imagens WHERE pk_id_imagem = '$idImagem' AND fk_id_user = '$idUser'");
+    $img = db_stmt($conn, 'SELECT * FROM imagens WHERE pk_id_imagem = ? AND fk_id_user = ?', 'ii', $idImagem, $idUser)->get_result();
 ?>
 
 <?php 
@@ -53,16 +33,16 @@
 
 <form method="POST" enctype="multipart/form-data">
     <input type="text" name="nome" placeholder="Nome da imagem" required>
-    <input type="file" name="imagem" required>
+    <input type="file" name="imagem" accept="image/jpeg,image/png,image/gif,image/webp">
     <button type="submit" name="btn" value="upload_image">Enviar</button>
 </form>
 
 <?php 
     while($row = $img->fetch_assoc()){
 ?>
-    <img class="img" src="<?= $row['caminho'] ?>">
+    <img class="img" src="<?= e($row['caminho']) ?>" alt="<?= e($row['nome_imagem']) ?>">
 
-    <p><b><?= $row['nome_imagem'] ?></b></p>
+    <p><b><?= e($row['nome_imagem']) ?></b></p>
 <?php
     }
 ?>

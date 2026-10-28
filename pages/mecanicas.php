@@ -16,10 +16,10 @@
 <?php while ($item = $result->fetch_assoc()): ?>
     <div class="card">
         <?php if (!empty($item['imagem'])): ?>
-            <img src="../<?= $item['imagem'] ?>" class="img-mecanica">
+            <img src="<?= e($item['imagem']) ?>" class="img-mecanica" alt="Imagem da mecânica">
         <?php endif; ?>
 
-        <p><?= nl2br($item['texto']) ?></p>
+        <p><?= nl2br(e($item['texto'])) ?></p>
     </div>
 <?php endwhile; ?>
 

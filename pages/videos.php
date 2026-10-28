@@ -4,33 +4,19 @@
     include "../include/login_php.php";
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
+        verify_csrf();
         $action = $_POST["btn"] ?? null;
 
-        // UPLOAD VIDEO
         if ($action == "upload_video" && $logado && $idUser) {
-            $nome = $_POST['nome'];
-
-            $arquivo = $_FILES['video'];
-            $nomeArquivo = $arquivo['name'];
-            $tmp = $arquivo['tmp_name'];
-
-            $pastaFisico = dirname(__DIR__) . "/videos/";
-            if (!is_dir($pastaFisico)) {
-                mkdir($pastaFisico, 0755, true);
+            $nome = trim($_POST['nome'] ?? '');
+            if ($nome === '' || mb_strlen($nome) > 255) exit('Nome do vídeo inválido.');
+            try {
+                $caminhoURL = store_upload($_FILES['video'] ?? [], 'videos', 'video');
+                db_stmt($conn, 'INSERT INTO videos (nome_video, caminho, fk_id_user) VALUES (?, ?, ?)', 'ssi', $nome, $caminhoURL, $idUser);
+                redirect_to('/pages/videos.php');
+            } catch (RuntimeException $exception) {
+                $erroUpload = $exception->getMessage();
             }
-            $caminhoFisico = $pastaFisico . $nomeArquivo;
-
-            $pastaURL = "../videos/";
-            $caminhoURL = $pastaURL . $nomeArquivo;
-
-            move_uploaded_file($tmp, $caminhoFisico);
-
-            $conn->query("INSERT INTO videos (nome_video, caminho, fk_id_user) 
-            VALUES ('$nome', '$caminhoURL', '$idUser')");
-
-            header("Location: /pi/pages/videos.php");
-            exit;
         }
 
         // COMENTAR
@@ -41,20 +27,18 @@
                 return;
             }
 
-            $comentario = $_POST['comentario'];
-            $nota = $_POST['nota'];
-            $idVideo = $_POST['id_video'];
+            $comentario = trim($_POST['comentario'] ?? '');
+            $nota = (int) ($_POST['nota'] ?? 0);
+            $idVideo = (int) ($_POST['id_video'] ?? 0);
+            if ($comentario === '' || $nota < 1 || $nota > 5 || $idVideo < 1) exit('Comentário ou nota inválidos.');
 
             // VERIFICA SE JÁ EXISTE COMENTÁRIO
-            $check = $conn->query("SELECT * FROM feedback_video WHERE fk_id_user = '$idUser' AND fk_id_video = '$idVideo'");
+            $check = db_stmt($conn, 'SELECT 1 FROM feedback_video WHERE fk_id_user = ? AND fk_id_video = ?', 'ii', $idUser, $idVideo)->get_result();
 
             if ($check->num_rows == 0) {
 
-                $conn->query("INSERT INTO feedback_video (comentario, nota, fk_id_video, fk_id_user) 
-                VALUES ('$comentario', '$nota', '$idVideo', '$idUser')");
-
-                header("Location: /pi/pages/videos.php");
-                exit;
+                db_stmt($conn, 'INSERT INTO feedback_video (comentario, nota, fk_id_video, fk_id_user) VALUES (?, ?, ?, ?)', 'siii', $comentario, $nota, $idVideo, $idUser);
+                redirect_to('/pages/videos.php');
 
             } else {
                 echo "<script>alert('Você já comentou nesse vídeo.');</script>";
@@ -63,7 +47,7 @@
 
         // MOSTRAR COMENTÁRIOS
         if ($action == "see_feedback") {
-            $show = $_POST['id_video'];
+            $show = (int) ($_POST['id_video'] ?? 0);
         }
 
         if ($action == "close_feedback") {
@@ -72,14 +56,15 @@
 
         // DELETE VIDEO
         if ($action == "delete_video" && $logado && $idUser) {
-            $idVideo = $_POST['idf'] ?? null;
+            $idVideo = (int) ($_POST['idf'] ?? 0);
 
             if ($idVideo) {
-                $conn->query("DELETE FROM videos WHERE pk_id_video = '$idVideo' AND fk_id_user = '$idUser'");
+                $result = db_stmt($conn, 'SELECT caminho FROM videos WHERE pk_id_video = ? AND fk_id_user = ?', 'ii', $idVideo, $idUser)->get_result()->fetch_assoc();
+                db_stmt($conn, 'DELETE FROM videos WHERE pk_id_video = ? AND fk_id_user = ?', 'ii', $idVideo, $idUser);
+                delete_uploaded_file($result['caminho'] ?? null);
             }
 
-            header("Location: /pi/pages/videos.php");
-            exit;
+            redirect_to('/pages/videos.php');
         }
 
         // EDIT VIDEO
@@ -88,8 +73,7 @@
 
             if ($idVideo) {
                 $_SESSION["id_video"] = $idVideo;
-                header("Location: /pi/pages/videos_edit.php");
-                exit;
+                redirect_to('/pages/videos_edit.php');
             }
         }
 
@@ -98,11 +82,10 @@
             $idFeedback = $_POST['idf'] ?? null;
 
             if ($idFeedback) {
-                $conn->query("DELETE FROM feedback_video WHERE pk_id_feedback_video = '$idFeedback' AND fk_id_user = '$idUser'");
+                db_stmt($conn, 'DELETE FROM feedback_video WHERE pk_id_feedback_video = ? AND fk_id_user = ?', 'ii', $idFeedback, $idUser);
             }
 
-            header("Location: /pi/pages/videos.php");
-            exit;
+            redirect_to('/pages/videos.php');
         }
 
         // EDIT FEEDBACK
@@ -111,14 +94,13 @@
 
             if ($idFeedback) {
                 $_SESSION["id_feedback_video"] = $idFeedback;
-                header("Location: /pi/pages/feedback_videos_edit.php");
-                exit;
+                redirect_to('/pages/feedback_videos_edit.php');
             }
         }
     }
 
     // BUSCAR VIDEOS (USUÁRIO LOGADO PRIMEIRO)
-    $videos = $conn->query("SELECT videos.*, user.name_user FROM videos JOIN user ON videos.fk_id_user = user.pk_id_user ORDER BY (videos.fk_id_user = '$idUser') DESC, videos.pk_id_video DESC");
+    $videos = db_stmt($conn, 'SELECT videos.*, user.name_user FROM videos JOIN user ON videos.fk_id_user = user.pk_id_user ORDER BY (videos.fk_id_user = ?) DESC, videos.pk_id_video DESC', 'i', (int) $idUser)->get_result();
 ?>
 
 <?php
@@ -130,7 +112,7 @@
 <!-- FORM UPLOAD -->
 <form method="POST" enctype="multipart/form-data">
     <input type="text" name="nome" placeholder="Nome do vídeo" required>
-    <input type="file" name="video" required>
+    <input type="file" name="video" accept="video/mp4,video/webm,video/ogg" required>
     <button type="submit" name="btn" value="upload_video">Enviar</button>
 </form>
 
@@ -148,11 +130,11 @@
     <div class="card">
 
         <video class="img" controls>
-            <source src="<?= $vid['caminho'] ?>" type="video/mp4">
+            <source src="<?= e($vid['caminho']) ?>">
         </video>
 
-        <p><b><?= $vid['nome_video'] ?></b></p>
-        <p>Por: <?= $vid['name_user'] ?></p>
+        <p><b><?= e($vid['nome_video']) ?></b></p>
+        <p>Por: <?= e($vid['name_user']) ?></p>
 
         <div class="nota_estrela">
             <?php for ($i = 1; $i <= 5; $i++) { ?>
@@ -175,7 +157,7 @@
         <form method="POST">
             <input type="hidden" name="id_video" value="<?= $vid['pk_id_video'] ?>">
             <button type="submit" name="btn" value="see_feedback">Comentários</button>
-        </form>>
+        </form>
 
         <section style="<?= ($show == $vid['pk_id_video']) ? "display:block;" : "display:none;" ?>">
 
@@ -187,7 +169,7 @@
             <h4>Comentários:</h4>
 
             <?php while ($f = $feedbacks->fetch_assoc()) { ?>
-                <p><b><?= $f['name_user'] ?>:</b> <?= $f['comentario'] ?></p>
+                <p><b><?= e($f['name_user']) ?>:</b> <?= e($f['comentario']) ?></p>
 
                 <div class="nota_estrela">
                     <?php for ($i = 1; $i <= 5; $i++) { ?>

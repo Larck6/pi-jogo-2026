@@ -2,22 +2,23 @@
     include "../include/conexao.php";
     include "../include/id.php";
     include "../include/login_php.php";
+    require_login();
 
-    $idFeedback = $_SESSION["id_feedback_video"] ?? null;
+    $idFeedback = (int) ($_SESSION["id_feedback_video"] ?? 0);
 
-    $sql = $conn->query("
+    $sql = db_stmt($conn, "
         SELECT feedback_video.comentario, feedback_video.nota, user.name_user, feedback_video.fk_id_user 
         FROM feedback_video 
         JOIN user ON feedback_video.fk_id_user = user.pk_id_user 
-        WHERE feedback_video.pk_id_feedback_video = '$idFeedback'
-    ");
+        WHERE feedback_video.pk_id_feedback_video = ? AND feedback_video.fk_id_user = ?
+    ", 'ii', $idFeedback, $idUser)->get_result();
 
     $dados = $sql->fetch_assoc();
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $feedback = $_POST['feedback'] ?? '';
-        $nota = $_POST['nota'] ?? '';
+        $nota = (int) ($_POST['nota'] ?? $dados['nota']);
 
         // Mantém valores antigos se não alterar
         if ($feedback == '') {
@@ -28,15 +29,9 @@
             $nota = $dados['nota'];
         }
 
-        $update = "UPDATE feedback_video 
-                SET comentario = '$feedback', nota = '$nota' 
-                WHERE pk_id_feedback_video = '$idFeedback' 
-                AND fk_id_user = '$idUser'";
-
-        if ($conn->query($update)) {
-            header("Location: /pi/pages/videos.php");
-            exit;
-        }
+        if ($nota < 1 || $nota > 5) exit('Nota inválida.');
+        db_stmt($conn, 'UPDATE feedback_video SET comentario = ?, nota = ? WHERE pk_id_feedback_video = ? AND fk_id_user = ?', 'siii', $feedback, $nota, $idFeedback, $idUser);
+        redirect_to('/pages/videos.php');
     }
 ?>
 
@@ -47,8 +42,8 @@
 ?>
 
 <section class="edit">
-    <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post">
-        <input type="text" name="feedback" placeholder="Feedback" value="<?= $dados['comentario'] ?>">
+    <form action="<?= e(app_url('/pages/feedback_videos_edit.php')) ?>" method="post">
+        <input type="text" name="feedback" placeholder="Feedback" value="<?= e($dados['comentario']) ?>">
 
         <div class="estrelas">
             <input type="radio" id="nota1" name="nota" value="5" <?= ($dados['nota'] == 5) ? 'checked' : '' ?> />
@@ -72,9 +67,9 @@
 </section>
 
 <section>
-    <div><?= $dados["comentario"] ?></div>
+    <div><?= e($dados["comentario"]) ?></div>
     <div><?= $dados["nota"] ?></div>
-    <div><?= $dados["name_user"] ?></div>
+    <div><?= e($dados["name_user"]) ?></div>
 </section>
 
 <script src="../js/login.js"></script>

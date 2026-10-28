@@ -1,0 +1,490 @@
+body.page-tudo,
+body.page-tudo_adm {
+  --site-bg-image: url("../Prints/Fundos/Imagem do ChatGPT 27 de out. de 2026, 14_05_20.png");
+}
+
+body.page-feedback,
+body.page-feedback_adm,
+body.page-feedback_edit {
+  --site-bg-image: url("../Prints/Fundos/Imagem do ChatGPT 27 de out. de 2026, 13_59_27.png");
+}
+
+body.page-capturas,
+body.page-capturas_adm,
+body.page-capturas_edit,
+body.page-feedback_capturas_edit {
+  --site-bg-image: url("../Prints/Fundos/Imagem do ChatGPT 27 de out. de 2026, 14_02_04.png");
+}
+
+body.page-videos,
+body.page-videos_adm,
+body.page-videos_edit,
+body.page-feedback_videos_edit {
+  --site-bg-image: url("../Prints/Fundos/Imagem do ChatGPT 27 de out. de 2026, 14_03_20.png");
+}
+
+body.page-discussoes,
+body.page-discussoes_adm {
+  --site-bg-image: url("../Prints/Fundos/Imagem do ChatGPT 27 de out. de 2026, 14_05_20.png");
+}
+
+body.page-mecanicas,
+body.page-mecanicas_adm {
+  --site-bg-image: url("../Prints/Fundos/Imagem do ChatGPT 27 de out. de 2026, 13_59_27.png");
+}
+
+body.page-atualizacoes,
+body.page-atualizacoes_adm {
+  --site-bg-image: url("../Prints/Fundos/Imagem do ChatGPT 27 de out. de 2026, 14_02_04.png");
+}
+
+body.page-tudo,
+body.page-feedback,
+body.page-capturas,
+body.page-videos,
+body.page-discussoes,
+body.page-mecanicas,
+body.page-atualizacoes {
+  --community-width: 860px;
+}
+
+body.page-tudo_adm,
+body.page-feedback_adm,
+body.page-capturas_adm,
+body.page-videos_adm,
+body.page-discussoes_adm,
+body.page-mecanicas_adm,
+body.page-atualizacoes_adm {
+  --community-width: 1000px;
+}
+
+body.page-tudo #container,
+body.page-feedback #container,
+body.page-capturas #container,
+body.page-videos #container,
+body.page-discussoes #container,
+body.page-mecanicas #container,
+body.page-atualizacoes #container {
+  overflow-x: clip;
+}
+
+/* =========================================================
+   HEADER DE COMUNIDADE E ADM
+   ========================================================= */
+#container > section.community-hero {
+  width: min(var(--community-width, 1000px), calc(100% - 40px));
+  margin: 32px auto 24px;
+  padding: 22px;
+  background: rgba(18, 24, 27, 0.9);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(10px);
+}
+
+.community-heading span {
+  display: inline-block;
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+}
+
+.community-heading h1 {
+  margin: 0 0 8px;
+  color: var(--text-main);
+  font-size: clamp(1.7rem, 5vw, 2.2rem);
+  font-weight: 700;
+}
+
+.community-heading p {
+  margin: 0 0 16px;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+.community-nav ul {
+  display: flex;
+  gap: 6px;
+  padding: 6px;
+  list-style: none;
+  background: rgba(7, 11, 13, 0.48);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  overflow-x: auto;
+  margin: 0;
+}
+
+.community-nav a {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.community-nav a:hover {
+  color: var(--text-main);
+  background: var(--surface-hover);
+}
+
+/* =========================================================
+   INTERFACE DE CONVERSA
+   ========================================================= */
+body.page-tudo form[method="GET"],
+body.page-feedback form[method="GET"] {
+  width: min(var(--community-width), calc(100% - 32px));
+  justify-content: flex-start;
+  padding: 12px;
+  background: rgba(18, 24, 27, 0.88);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+}
+
+body.page-feedback #container > section:not(.community-hero),
+body.page-capturas #container > form:not([method="GET"]),
+body.page-videos #container > form:not([method="GET"]),
+body.page-discussoes #container > section:not(.community-hero) {
+  width: min(var(--community-width), calc(100% - 32px));
+  margin: 16px auto 24px;
+  padding: 14px;
+  background: rgba(18, 24, 27, 0.94);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
+}
+
+body.page-feedback #container > section:not(.community-hero) > form,
+body.page-discussoes #container > section:not(.community-hero) > form {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+body.page-capturas #container > form:not([method="GET"]),
+body.page-videos #container > form:not([method="GET"]) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+
+body.page-capturas #container > form:not([method="GET"]) input[type="text"],
+body.page-videos #container > form:not([method="GET"]) input[type="text"] {
+  grid-column: 1 / -1;
+}
+
+body.page-capturas #container > form:not([method="GET"]) input[type="file"],
+body.page-videos #container > form:not([method="GET"]) input[type="file"] {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-muted);
+  background: var(--surface-alt);
+}
+
+body.page-capturas input[type="file"]::file-selector-button,
+body.page-videos input[type="file"]::file-selector-button {
+  margin: -10px 12px -10px -14px;
+  padding: 10px 14px;
+  color: var(--text-main);
+  background: var(--surface-hover);
+  border: 0;
+  border-right: 1px solid var(--border-color);
+  cursor: pointer;
+}
+
+body.page-feedback input[type="text"],
+body.page-capturas input[type="text"],
+body.page-videos input[type="text"],
+body.page-discussoes input[type="text"] {
+  min-height: 44px;
+  background: var(--surface-alt);
+  border-radius: 999px;
+  padding-inline: 18px;
+}
+
+body.page-tudo input,
+body.page-tudo select,
+body.page-feedback input,
+body.page-feedback select,
+body.page-capturas input,
+body.page-capturas select,
+body.page-videos input,
+body.page-videos select,
+body.page-discussoes input,
+body.page-discussoes select {
+  min-width: 0;
+}
+
+body.page-feedback #container > p,
+body.page-capturas #container > p,
+body.page-videos #container > p,
+body.page-discussoes #container > p {
+  width: min(var(--community-width), calc(100% - 32px));
+  margin: 14px auto;
+  padding: 12px 16px;
+  color: var(--text-muted);
+  background: rgba(18, 24, 27, 0.88);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
+
+body.page-tudo .card,
+body.page-capturas .card,
+body.page-videos .card,
+body.page-mecanicas .card,
+body.page-atualizacoes .card,
+body.page-discussoes .forum,
+body.page-feedback #container > div:not([class]) > div:not([class]) {
+  position: relative;
+  width: min(var(--community-width), calc(100% - 32px));
+  margin: 14px auto;
+  padding: 18px 20px;
+  background: rgba(24, 32, 36, 0.95);
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--primary-hover);
+  border-radius: 6px 18px 18px 18px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
+  transition: transform 0.18s ease, border-color 0.18s ease,
+    background-color 0.18s ease;
+  overflow-wrap: anywhere;
+}
+
+body.page-tudo .card:hover,
+body.page-capturas .card:hover,
+body.page-videos .card:hover,
+body.page-mecanicas .card:hover,
+body.page-atualizacoes .card:hover,
+body.page-discussoes .forum:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-light);
+  border-left-color: var(--accent);
+  background: rgba(28, 38, 42, 0.97);
+}
+
+body.page-tudo .card h3,
+body.page-discussoes .forum h3 {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 5px 10px;
+  color: var(--accent-hover);
+  background: rgba(212, 163, 66, 0.1);
+  border: 1px solid rgba(212, 163, 66, 0.2);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+body.page-tudo .card p,
+body.page-discussoes .forum p,
+body.page-feedback #container > div:not([class]) > div:not([class]) > div:first-child {
+  font-size: 0.98rem;
+  line-height: 1.65;
+}
+
+body.page-tudo .card img,
+body.page-tudo .card video,
+body.page-capturas .card img,
+body.page-videos .card video {
+  border-radius: 14px;
+  height: auto;
+  min-width: 0;
+}
+
+body.page-tudo .card img,
+body.page-tudo .card video,
+body.page-capturas .card img,
+body.page-videos .card video,
+body.page-mecanicas .card img,
+body.page-atualizacoes .card img {
+  max-width: 100%;
+}
+
+body.page-capturas .card section,
+body.page-videos .card section,
+body.page-discussoes .forum section {
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(7, 11, 13, 0.38);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+}
+
+body.page-capturas .card section > p,
+body.page-videos .card section > p,
+.comentario {
+  width: fit-content;
+  max-width: 88%;
+  margin: 8px 0;
+  padding: 10px 14px;
+  color: var(--text-muted);
+  background: var(--surface-hover);
+  border: 1px solid var(--border-color);
+  border-radius: 4px 15px 15px 15px;
+  line-height: 1.5;
+}
+
+body.page-capturas .card section form:last-child,
+body.page-videos .card section form:last-child,
+body.page-discussoes .forum section form:last-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+body.page-capturas .card section form:last-child input[type="text"],
+body.page-videos .card section form:last-child input[type="text"],
+body.page-discussoes .forum section form:last-child input[type="text"] {
+  flex: 1;
+}
+
+body.page-discussoes button[value="delete_comment"] {
+  min-height: 0;
+  margin-left: 8px;
+  padding: 3px 8px;
+  color: #dba0a0;
+  background: transparent;
+  border-color: rgba(207, 67, 67, 0.25);
+  font-size: 0.72rem;
+}
+
+@media (max-width: 620px) {
+  #container > section.community-hero {
+    width: calc(100% - 20px);
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .community-nav ul {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-radius: 12px;
+  }
+
+  .community-nav ul::-webkit-scrollbar {
+    display: none;
+  }
+
+  .community-nav li {
+    flex: 0 0 auto;
+  }
+
+  .community-nav a {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+
+  body.page-tudo .card,
+  body.page-capturas .card,
+  body.page-videos .card,
+  body.page-mecanicas .card,
+  body.page-atualizacoes .card,
+  body.page-discussoes .forum,
+  body.page-feedback #container > div:not([class]) > div:not([class]) {
+    width: calc(100% - 20px);
+    padding: 15px;
+  }
+
+  body.page-tudo form[method="GET"],
+  body.page-feedback form[method="GET"] {
+    flex-direction: column;
+  }
+
+  body.page-tudo form[method="GET"] select,
+  body.page-tudo form[method="GET"] button,
+  body.page-feedback form[method="GET"] select,
+  body.page-feedback form[method="GET"] button {
+    width: 100%;
+  }
+
+  body.page-tudo form[method="GET"],
+  body.page-feedback form[method="GET"],
+  body.page-feedback #container > section:not(.community-hero),
+  body.page-capturas #container > form:not([method="GET"]),
+  body.page-videos #container > form:not([method="GET"]),
+  body.page-discussoes #container > section:not(.community-hero),
+  body.page-feedback #container > p,
+  body.page-capturas #container > p,
+  body.page-videos #container > p,
+  body.page-discussoes #container > p {
+    width: calc(100% - 20px);
+  }
+
+  body.page-capturas #container > form:not([method="GET"]),
+  body.page-videos #container > form:not([method="GET"]) {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 14px;
+  }
+
+  body.page-capturas #container > form:not([method="GET"]) input,
+  body.page-capturas #container > form:not([method="GET"]) button,
+  body.page-videos #container > form:not([method="GET"]) input,
+  body.page-videos #container > form:not([method="GET"]) button {
+    grid-column: 1;
+    width: 100%;
+  }
+
+  body.page-capturas .card section form:last-child,
+  body.page-videos .card section form:last-child,
+  body.page-discussoes .forum section form:last-child {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+.adm-hero .community-heading span {
+  color: #5c9df5;
+}
+
+/* Títulos soltos seguem o mesmo eixo dos cards da comunidade. */
+body.page-atualizacoes #container > h2,
+body.page-mecanicas_adm #container > h2 {
+  width: min(var(--community-width, 860px), calc(100% - 32px));
+  margin: 26px auto 12px;
+  color: var(--text-main);
+  font-size: 1.45rem;
+  line-height: 1.3;
+}
+
+@media (max-width: 620px) {
+  body.page-atualizacoes #container > h2,
+  body.page-mecanicas_adm #container > h2 {
+    width: calc(100% - 20px);
+    margin-top: 22px;
+  }
+}
+
+/* =========================================================
+   CARDS DE FEEDBACK E DETALHES
+   ========================================================= */
+body.page-feedback #container > div:not([class]) > div:not([class]) {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+body.page-feedback #container > div:not([class]) > div:not([class]) > div:first-child {
+  font-size: 1.05rem;
+  color: var(--text-main);
+}
+
+body.page-feedback #container > div:not([class]) > div:not([class]) > div:nth-child(3) {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}

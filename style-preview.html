@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <title>Preview do CSS</title>
+</head>
+<body>
+  <div id="container">
+    <header>
+      <nav>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Comunidade</a></li>
+          <li><a href="#">Sobre</a></li>
+          <li><a href="#">Download</a></li>
+          <li><button id="openLogin">Login</button></li>
+        </ul>
+      </nav>
+    </header>
+
+    <section>
+      <nav>
+        <ul>
+          <li><a href="#">Tudo</a></li>
+          <li><a href="#">Analises</a></li>
+          <li><a href="#">Capturas de Tela</a></li>
+          <li><a href="#">Discussoes</a></li>
+          <li><a href="#">Videos</a></li>
+          <li><a href="#">Mecanicas</a></li>
+          <li><a href="#">Atualizacao</a></li>
+        </ul>
+      </nav>
+    </section>
+
+    <form method="GET">
+      <label for="tipo">Filtrar:</label>
+      <select id="tipo" name="tipo">
+        <option>Tudo</option>
+        <option>Analises</option>
+        <option>Capturas</option>
+      </select>
+      <select name="nota">
+        <option>Qualquer nota</option>
+        <option>5 estrelas</option>
+        <option>4+ estrelas</option>
+      </select>
+      <button type="submit">Filtrar</button>
+    </form>
+
+    <div class="card review">
+      <h3>Analise</h3>
+      <p><b>Jogador</b></p>
+      <p>O visual novo deixa a comunidade mais organizada e facil de navegar.</p>
+      <div class="nota_estrela">
+        <i class="fa fa-star" id="nota_checked"></i>
+        <i class="fa fa-star" id="nota_checked"></i>
+        <i class="fa fa-star" id="nota_checked"></i>
+        <i class="fa fa-star" id="nota_checked"></i>
+        <i class="fa fa-star"></i>
+      </div>
+    </div>
+
+    <div class="card imagem">
+      <img class="img" src="img/mito22.jpg" alt="Preview de captura">
+      <p><b>Captura da comunidade</b></p>
+      <p>Por: Jogador</p>
+      <form method="POST">
+        <button type="submit" name="btn" value="see_feedback">Comentarios</button>
+        <button type="submit" name="btn" value="delete">Excluir</button>
+      </form>
+    </div>
+
+    <div class="card video">
+      <video class="img" controls>
+        <source src="videos/277042_tiny.mp4" type="video/mp4">
+      </video>
+      <p><b>Video enviado</b></p>
+      <p>Por: Jogador</p>
+    </div>
+
+    <div class="forum" id="forum-preview">
+      <h3>Discussao da comunidade</h3>
+      <p>Este card usa a mesma classe dos topicos de forum.</p>
+      <small>Por: Jogador</small>
+      <form method="POST">
+        <button type="submit" name="btn" value="see_comments">Comentarios</button>
+      </form>
+      <section style="display: block;">
+        <h4>Comentarios:</h4>
+        <div class="comentario">
+          <strong>Jogador:</strong>
+          Ficou mais legivel.
+        </div>
+        <form method="POST">
+          <input type="text" placeholder="Comentar...">
+          <button type="submit" name="btn" value="comment">Enviar</button>
+        </form>
+      </section>
+    </div>
+
+    <div>
+      <div>
+        <div>Feedback sem classe propria</div>
+        <div class="nota_estrela">
+          <i class="fa fa-star" id="nota_checked"></i>
+          <i class="fa fa-star" id="nota_checked"></i>
+          <i class="fa fa-star" id="nota_checked"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+        </div>
+        <div>Usuario</div>
+      </div>
+    </div>
+
+    <div class="segura2">
+      <div class="ladoesq">
+        <div class="bloco1">
+          <h2 class="titulosobre">Sobre</h2>
+          <div class="txtsobre1">Bloco de texto da pagina sobre.</div>
+        </div>
+        <div class="bloco2">
+          <h2 class="titulosobre">Comunidade</h2>
+          <div class="txtsobre2">Outro bloco com informacoes do jogo.</div>
+        </div>
+      </div>
+      <div class="ladodir">
+        <div class="txtdireita">Destaques</div>
+        <div class="slider-degrade">
+          <div class="slider_vertical">
+            <div class="slides_vertical">
+              <div class="group_vertical">
+                <img src="img/mito22.jpg" alt="Preview vertical">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slider-container">
+      <button id="prev" type="button">&lt;</button>
+      <div class="slider">
+        <div class="slides">
+          <div class="group">
+            <img src="img/mito22.jpg" alt="Slide 1">
+            <img src="uploads/mecanicas/1775763356_468941633-122163616160095020-5742475402221125454-n-1.jpg" alt="Slide 2">
+            <img src="img/mito22.jpg" alt="Slide 3">
+          </div>
+        </div>
+      </div>
+      <button id="next" type="button">&gt;</button>
+    </div>
+  </div>
+</body>
+</html>

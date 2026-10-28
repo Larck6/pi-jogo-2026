@@ -6,33 +6,21 @@
     $user_row = null;
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        verify_csrf();
 
         $action = $_POST["btn"] ?? null;
 
         // UPLOAD IMAGEM
         if ($action == "upload_image" && $logado && $idUser) {
-            $nome = $_POST['nome'];
-
-            $arquivo = $_FILES['imagem'];
-            $nomeArquivo = $arquivo['name'];
-            $tmp = $arquivo['tmp_name'];
-
-            $pastaFisico = dirname(__DIR__) . "/img/";
-            if (!is_dir($pastaFisico)) {
-                mkdir($pastaFisico, 0755, true);
+            $nome = trim($_POST['nome'] ?? '');
+            if ($nome === '' || mb_strlen($nome) > 255) exit('Nome da imagem inválido.');
+            try {
+                $caminhoURL = store_upload($_FILES['imagem'] ?? [], 'capturas', 'image');
+                db_stmt($conn, 'INSERT INTO imagens (nome_imagem, caminho, fk_id_user) VALUES (?, ?, ?)', 'ssi', $nome, $caminhoURL, $idUser);
+                redirect_to('/pages/capturas.php');
+            } catch (RuntimeException $exception) {
+                $erroUpload = $exception->getMessage();
             }
-            $caminhoFisico = $pastaFisico . $nomeArquivo;
-
-            $pastaURL = "../img/";
-            $caminhoURL = $pastaURL . $nomeArquivo;
-
-            move_uploaded_file($tmp, $caminhoFisico);
-
-            $conn->query("INSERT INTO imagens (nome_imagem, caminho, fk_id_user) 
-            VALUES ('$nome', '$caminhoURL', '$idUser')");
-
-            header("Location: /pi/pages/capturas.php");
-            exit;
         }
 
         // COMENTAR
@@ -42,19 +30,18 @@
                 return;
             }
 
-            $comentario = $_POST['comentario'];
-            $nota = $_POST['nota'];
-            $idImagem = $_POST['id_imagem'];
+            $comentario = trim($_POST['comentario'] ?? '');
+            $nota = (int) ($_POST['nota'] ?? 0);
+            $idImagem = (int) ($_POST['id_imagem'] ?? 0);
+            if ($comentario === '' || $nota < 1 || $nota > 5 || $idImagem < 1) exit('Comentário ou nota inválidos.');
 
             // VERIFICA SE JÁ EXISTE COMENTÁRIO NESSA IMAGEM
-            $check = $conn->query("SELECT * FROM feedback_imagem WHERE fk_id_user = '$idUser' AND fk_id_imagem = '$idImagem'");
+            $check = db_stmt($conn, 'SELECT 1 FROM feedback_imagem WHERE fk_id_user = ? AND fk_id_imagem = ?', 'ii', $idUser, $idImagem)->get_result();
 
             if ($check->num_rows == 0) {
 
-                $conn->query("INSERT INTO feedback_imagem (comentario, nota, fk_id_imagem, fk_id_user) VALUES ('$comentario', '$nota', '$idImagem', '$idUser')");
-
-                header("Location: /pi/pages/capturas.php");
-                exit;
+                db_stmt($conn, 'INSERT INTO feedback_imagem (comentario, nota, fk_id_imagem, fk_id_user) VALUES (?, ?, ?, ?)', 'siii', $comentario, $nota, $idImagem, $idUser);
+                redirect_to('/pages/capturas.php');
 
             } else {
                 echo "<script>alert('Você já comentou nessa imagem.');</script>";
@@ -63,7 +50,7 @@
 
         // MOSTRAR COMENTÁRIOS
         if ($action == "see_feedback") {
-            $show = $_POST['id_imagem'];
+            $show = (int) ($_POST['id_imagem'] ?? 0);
         }
 
         if ($action == "close_feedback") {
@@ -72,24 +59,27 @@
 
         // DELETE IMAGEM
         if ($action == "delete_imagem" && $logado && $idUser) {
-            $idImagem = $_POST['idf'] ?? null;
+            $idImagem = (int) ($_POST['idf'] ?? 0);
 
             if ($idImagem) {
-                $conn->query("DELETE FROM imagens WHERE pk_id_imagem = '$idImagem' AND fk_id_user = '$idUser'");
+                $result = db_stmt($conn, 'SELECT caminho FROM imagens WHERE pk_id_imagem = ? AND fk_id_user = ?', 'ii', $idImagem, $idUser)->get_result()->fetch_assoc();
+                db_stmt($conn, 'DELETE FROM imagens WHERE pk_id_imagem = ? AND fk_id_user = ?', 'ii', $idImagem, $idUser);
+                delete_uploaded_file($result['caminho'] ?? null);
             }
 
-            header("Location: /pi/pages/capturas.php");
-            exit;
+            redirect_to('/pages/capturas.php');
         }
 
         // EDIT IMAGEM
         if ($action == "edit_imagem" && $logado && $idUser) {
-            $idImagem = $_POST['idf'] ?? null;
+            $idImagem = (int) ($_POST['idf'] ?? 0);
 
             if ($idImagem) {
-                $_SESSION["id_imagem"] = $idImagem;
-                header("Location: /pi/pages/capturas_edit.php");
-                exit;
+                $owns = db_stmt($conn, 'SELECT 1 FROM imagens WHERE pk_id_imagem = ? AND fk_id_user = ?', 'ii', $idImagem, $idUser)->get_result()->num_rows;
+                if ($owns) {
+                    $_SESSION["id_imagem"] = $idImagem;
+                    redirect_to('/pages/capturas_edit.php');
+                }
             }
         }
 
@@ -98,11 +88,10 @@
             $idFeedback = $_POST['idf'] ?? null;
 
             if ($idFeedback) {
-                $conn->query("DELETE FROM feedback_imagem WHERE pk_id_feedback_imagem = '$idFeedback' AND fk_id_user = '$idUser'");
+                db_stmt($conn, 'DELETE FROM feedback_imagem WHERE pk_id_feedback_imagem = ? AND fk_id_user = ?', 'ii', $idFeedback, $idUser);
             }
 
-            header("Location: /pi/pages/capturas.php");
-            exit;
+            redirect_to('/pages/capturas.php');
         }
 
         // EDIT
@@ -111,20 +100,19 @@
 
             if ($idFeedback) {
                 $_SESSION["id_feedback_imagem"] = $idFeedback;
-                header("Location: /pi/pages/feedback_capturas_edit.php");
-                exit;
+                redirect_to('/pages/feedback_capturas_edit.php');
             }
         }
     }
 
     $userlogado = null;
     if ($idUser) {
-        $userlogado = $conn->query("SELECT feedback_imagem.pk_id_feedback_imagem, feedback_imagem.comentario, feedback_imagem.nota, user.name_user, feedback_imagem.fk_id_user FROM feedback_imagem JOIN user ON feedback_imagem.fk_id_user = user.pk_id_user WHERE fk_id_user = '$idUser'");
+        $userlogado = db_stmt($conn, 'SELECT feedback_imagem.pk_id_feedback_imagem, feedback_imagem.comentario, feedback_imagem.nota, user.name_user, feedback_imagem.fk_id_user FROM feedback_imagem JOIN user ON feedback_imagem.fk_id_user = user.pk_id_user WHERE feedback_imagem.fk_id_user = ?', 'i', $idUser)->get_result();
     }
     $user_feedback = ($userlogado && $userlogado->num_rows > 0) ? $userlogado->fetch_assoc() : null;
 
     // BUSCAR IMAGENS
-    $imagens = $conn->query("SELECT imagens.*, user.name_user FROM imagens JOIN user ON imagens.fk_id_user = user.pk_id_user ORDER BY (imagens.fk_id_user = '$idUser') DESC");
+    $imagens = db_stmt($conn, 'SELECT imagens.*, user.name_user FROM imagens LEFT JOIN user ON imagens.fk_id_user = user.pk_id_user ORDER BY (imagens.fk_id_user = ?) DESC, imagens.pk_id_imagem DESC', 'i', (int) $idUser)->get_result();
 ?>
 
 <?php
@@ -136,7 +124,7 @@
 <!-- FORM UPLOAD -->
 <form method="POST" enctype="multipart/form-data">
     <input type="text" name="nome" placeholder="Nome da imagem" required>
-    <input type="file" name="imagem" required>
+    <input type="file" name="imagem" accept="image/jpeg,image/png,image/gif,image/webp" required>
     <button type="submit" name="btn" value="upload_image">Enviar</button>
 </form>
 
@@ -152,10 +140,10 @@
 
     <div class="card">
 
-        <img class="img" src="<?= $img['caminho'] ?>">
+        <img class="img" src="<?= e($img['caminho']) ?>" alt="<?= e($img['nome_imagem']) ?>">
 
-        <p><b><?= $img['nome_imagem'] ?></b></p>
-        <p>Por: <?= $img['name_user'] ?></p>
+        <p><b><?= e($img['nome_imagem']) ?></b></p>
+        <p>Por: <?= e($img['name_user'] ?? 'Usuário removido') ?></p>
 
         <div class="nota_estrela">
             <?php for ($i = 1; $i <= 5; $i++) { ?>
@@ -190,7 +178,7 @@
             <h4>Comentários:</h4>
 
             <?php while ($f = $feedbacks->fetch_assoc()) { ?>
-                <p><b><?= $f['name_user'] ?>:</b> <?= $f['comentario'] ?></p>
+                <p><b><?= e($f['name_user']) ?>:</b> <?= e($f['comentario']) ?></p>
 
                 <div class="nota_estrela">
                     <?php for ($i = 1; $i <= 5; $i++) { ?>

@@ -2,17 +2,18 @@
     include "../include/conexao.php";
     include "../include/id.php";
     include "../include/login_php.php";
+    require_login();
 
-    $idFeedback = $_SESSION["id_feedback"] ?? null;
+    $idFeedback = (int) ($_SESSION["id_feedback"] ?? 0);
 
-    $sql = $conn->query("SELECT feedback.feedback, feedback.nota, user.name_user, feedback.fk_id_user FROM feedback JOIN user ON feedback.fk_id_user = user.pk_id_user WHERE feedback.pk_id_feedback = '$idFeedback'");
+    $sql = db_stmt($conn, 'SELECT feedback.feedback, feedback.nota, user.name_user, feedback.fk_id_user FROM feedback JOIN user ON feedback.fk_id_user = user.pk_id_user WHERE feedback.pk_id_feedback = ? AND feedback.fk_id_user = ?', 'ii', $idFeedback, $idUser)->get_result();
 
     $dados = $sql->fetch_assoc();
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $feedback = $_POST['feedback'] ?? '';
-        $nota = $_POST['nota'] ?? '';
+        $nota = (int) ($_POST['nota'] ?? $dados['nota']);
 
         if ($feedback == '') {
             $feedback = $dados['feedback'];
@@ -22,12 +23,9 @@
             $nota = $dados['nota'];
         }
 
-        $update = "UPDATE feedback SET feedback = '$feedback', nota = '$nota' WHERE pk_id_feedback = '$idFeedback' AND fk_id_user = '$idUser'";
-
-        if ($conn->query($update)) {
-            header("Location: /pi/pages/feedback.php");
-            exit;
-        }
+        if ($nota < 1 || $nota > 5) exit('Nota inválida.');
+        db_stmt($conn, 'UPDATE feedback SET feedback = ?, nota = ? WHERE pk_id_feedback = ? AND fk_id_user = ?', 'siii', $feedback, $nota, $idFeedback, $idUser);
+        redirect_to('/pages/feedback.php');
     }
 ?>
 
@@ -38,8 +36,8 @@
 ?>
 
 <section class="edit">
-    <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post">
-        <input type="text" name="feedback" placeholder="Feedback" value="<?= $dados['feedback'] ?>">
+    <form action="<?= e(app_url('/pages/feedback_edit.php')) ?>" method="post">
+        <input type="text" name="feedback" placeholder="Feedback" value="<?= e($dados['feedback']) ?>">
         <div class="estrelas">
             <input type="radio" id="nota1" name="nota" value="5" />
             <label for="nota1"><i class="fa fa-star"></i></label>
@@ -61,9 +59,9 @@
 </section>
 
 <section>
-    <div><?= $dados["feedback"] ?></div>
+    <div><?= e($dados["feedback"]) ?></div>
     <div><?= $dados["nota"] ?></div>
-    <div><?= $dados["name_user"] ?></div>
+    <div><?= e($dados["name_user"]) ?></div>
 </section>
 
 <script src="../js/login.js"></script>

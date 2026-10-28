@@ -7,7 +7,7 @@
     $quant_feed = 0;
 
     if ($idUser) {
-        $user_result = $conn->query("SELECT * FROM user WHERE pk_id_user = '$idUser'");
+        $user_result = db_stmt($conn, 'SELECT * FROM user WHERE pk_id_user = ?', 'i', $idUser)->get_result();
         
         if ($user_result && $user_result->num_rows > 0) {
             $user_row = $user_result->fetch_assoc();
@@ -16,6 +16,7 @@
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        verify_csrf();
 
         $action = $_POST["btn"] ?? '';
 
@@ -25,13 +26,13 @@
                 echo "<script>alert('Você já enviou um feedback.');</script>";
             } else {
                 $feedback = $_POST['feedback'] ?? '';
-                $nota = $_POST['nota'] ?? '';
+                $nota = (int) ($_POST['nota'] ?? 0);
+                $feedback = trim($feedback);
+                if ($feedback === '' || $nota < 1 || $nota > 5) exit('Feedback ou nota inválidos.');
 
-                $conn->query("INSERT INTO feedback (feedback, nota, fk_id_user) VALUES ('$feedback', '$nota', '$idUser')");
-                $conn->query("UPDATE user SET quant_feedback = 1 WHERE pk_id_user = '$idUser'");
-
-                header("Location: /pi/pages/feedback.php");
-                exit;
+                db_stmt($conn, 'INSERT INTO feedback (feedback, nota, fk_id_user) VALUES (?, ?, ?)', 'sii', $feedback, $nota, $idUser);
+                db_stmt($conn, 'UPDATE user SET quant_feedback = 1 WHERE pk_id_user = ?', 'i', $idUser);
+                redirect_to('/pages/feedback.php');
             }
         }
 
@@ -40,12 +41,10 @@
             $idFeedback = $_POST['idf'] ?? null;
 
             if ($idFeedback) {
-                $conn->query("DELETE FROM feedback WHERE pk_id_feedback = '$idFeedback' AND fk_id_user = '$idUser'");
-                $conn->query("UPDATE user SET quant_feedback = 0 WHERE pk_id_user = '$idUser'");
+                db_stmt($conn, 'DELETE FROM feedback WHERE pk_id_feedback = ? AND fk_id_user = ?', 'ii', $idFeedback, $idUser);
             }
 
-            header("Location: /pi/pages/feedback.php");
-            exit;
+            redirect_to('/pages/feedback.php');
         }
 
         if ($action == "edit" && $logado && $idUser) {
@@ -54,8 +53,7 @@
 
             if ($idFeedback) {
                 $_SESSION["id_feedback"] = $idFeedback;
-                header("Location: /pi/pages/feedback_edit.php");
-                exit;
+                redirect_to('/pages/feedback_edit.php');
             }
         }
     }
@@ -64,7 +62,7 @@
 
     $userlogado = null;
     if ($idUser) {
-        $userlogado = $conn->query("SELECT feedback.pk_id_feedback, feedback.feedback, feedback.nota, user.name_user, feedback.fk_id_user FROM feedback JOIN user ON feedback.fk_id_user = user.pk_id_user WHERE fk_id_user = '$idUser'");
+        $userlogado = db_stmt($conn, 'SELECT feedback.pk_id_feedback, feedback.feedback, feedback.nota, user.name_user, feedback.fk_id_user FROM feedback JOIN user ON feedback.fk_id_user = user.pk_id_user WHERE feedback.fk_id_user = ?', 'i', $idUser)->get_result();
     }
 
     $user_feedback = ($userlogado && $userlogado->num_rows > 0) ? $userlogado->fetch_assoc() : null;
@@ -91,7 +89,7 @@
 
 <?php if ($logado) { ?>
 <section>
-    <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post">
+    <form action="<?= e(app_url('/pages/feedback.php')) ?>" method="post">
         <input type="text" name="feedback" placeholder="Feedback" required>
         <div class="estrelas">
             <input type="radio" id="nota1" name="nota" value="5" />
@@ -132,21 +130,21 @@
 <div>
     <?php if ($logado && $user_feedback) { ?>
         <div>
-            <div><?= $user_feedback["feedback"] ?></div>
+            <div><?= e($user_feedback["feedback"]) ?></div>
             <div class="nota_estrela">
                 <?php for ($i = 1; $i <= 5; $i++){ ?>
                     <i class="fa fa-star" id="<?= ($user_feedback["nota"] >= $i) ? "nota_checked" : ""; ?>"></i>
                 <?php } ?>
             </div>
-            <div><?= $user_feedback["name_user"] ?></div>
+            <div><?= e($user_feedback["name_user"]) ?></div>
             <div>
-                <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post">
+                <form action="<?= e(app_url('/pages/feedback.php')) ?>" method="post">
                     <input type="hidden" name="idf" value="<?= $user_feedback["pk_id_feedback"] ?>">
                     <button type="submit" name="btn" value="edit">Editar</button>
                 </form>
             </div>
             <div>
-                <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post">
+                <form action="<?= e(app_url('/pages/feedback.php')) ?>" method="post">
                     <input type="hidden" name="idf" value="<?= $user_feedback["pk_id_feedback"] ?>">
                     <button type="submit" name="btn" value="delete">Excluir</button>
                 </form>
@@ -157,13 +155,13 @@
     <?php while ($row = $select->fetch_assoc()) { ?>
         <?php if (!($logado && $row["fk_id_user"] == $idUser)) { ?>
             <div>
-                <div><?= $row['feedback'] ?></div>
+                <div><?= e($row['feedback']) ?></div>
                 <div class="nota_estrela">
                     <?php for ($i = 1; $i <= 5; $i++){ ?>
                         <i class="fa fa-star" id="<?= ($row["nota"] >= $i) ? "nota_checked" : ""; ?>"></i>
                     <?php } ?>
                 </div>
-                <div><?= $row["name_user"] ?></div>
+                <div><?= e($row["name_user"]) ?></div>
             </div>
         <?php } ?>
     <?php } ?>

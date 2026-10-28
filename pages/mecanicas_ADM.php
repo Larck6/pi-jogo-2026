@@ -4,16 +4,9 @@ include "../include/id.php";
 include "../include/login_php.php";
 
 // PROTEÇÃO ADM
-if (!isset($_SESSION['adm']) || $_SESSION['adm'] !== true) {
-    die("Acesso negado");
-}
+require_admin();
 
 // DIRETÓRIO DE UPLOAD
-$diretorio = "../uploads/mecanicas/";
-if (!is_dir($diretorio)) {
-    mkdir($diretorio, 0755, true);
-}
-
 // =======================
 // AÇÕES DO ADMINISTRADOR
 // =======================
@@ -27,28 +20,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         die("O texto não pode estar vazio.");
     }
 
-    $texto = $conn->real_escape_string($texto);
     $caminhoBanco = "";
 
     // Upload da imagem
     if (!empty($_FILES['imagem']['name'])) {
-        $nomeImagem = time() . "_" . basename($_FILES['imagem']['name']);
-        $caminhoCompleto = $diretorio . $nomeImagem;
-
-        if (move_uploaded_file($_FILES['imagem']['tmp_name'], $caminhoCompleto)) {
-            $caminhoBanco = "uploads/mecanicas/" . $nomeImagem;
-        } else {
-            die("Erro ao enviar a imagem.");
-        }
+        $caminhoBanco = store_upload($_FILES['imagem'], 'mecanicas', 'image');
     }
 
     // CRIAR
     if ($acao === "criar") {
-        $sql = "INSERT INTO mecanicas (texto, imagem) 
-                VALUES ('$texto', '$caminhoBanco')";
-        if (!$conn->query($sql)) {
-            die("Erro ao inserir: " . $conn->error);
-        }
+        db_stmt($conn, 'INSERT INTO mecanicas (texto, imagem) VALUES (?, ?)', 'ss', $texto, $caminhoBanco);
     }
 
     // EDITAR
@@ -56,17 +37,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $id = (int)$id;
 
         if (!empty($caminhoBanco)) {
-            $sql = "UPDATE mecanicas 
-                    SET texto='$texto', imagem='$caminhoBanco'
-                    WHERE pk_id_mecanicas=$id";
+            db_stmt($conn, 'UPDATE mecanicas SET texto=?, imagem=? WHERE pk_id_mecanicas=?', 'ssi', $texto, $caminhoBanco, $id);
         } else {
-            $sql = "UPDATE mecanicas 
-                    SET texto='$texto'
-                    WHERE pk_id_mecanicas=$id";
-        }
-
-        if (!$conn->query($sql)) {
-            die("Erro ao atualizar: " . $conn->error);
+            db_stmt($conn, 'UPDATE mecanicas SET texto=? WHERE pk_id_mecanicas=?', 'si', $texto, $id);
         }
     }
 
@@ -92,7 +65,7 @@ while ($row = $result->fetch_assoc()) {
 
 <?php
     include "../include/header.php";
-    include "../include/menu_ADM.php";
+    include "../include/menu_adm.php";
     include "../include/login.php";
 ?>
 
@@ -114,10 +87,10 @@ while ($row = $result->fetch_assoc()) {
             <form method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="id" value="<?= $item['pk_id_mecanicas'] ?>">
 
-                <textarea name="texto" required><?= $item['texto'] ?></textarea>
+            <textarea name="texto" required><?= e($item['texto']) ?></textarea>
 
                 <?php if (!empty($item['imagem'])): ?>
-                    <img src="../<?= $item['imagem'] ?>" width="200"><br><br>
+                    <img src="<?= e($item['imagem']) ?>" width="200" alt="Imagem da mecânica"><br><br>
                 <?php endif; ?>
 
                 <input type="file" name="imagem" accept="image/*">

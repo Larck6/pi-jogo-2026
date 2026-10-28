@@ -1,55 +1,58 @@
 <?php
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+declare(strict_types=1);
 
-    if (!defined('ROOT_DIR')) {
-        define('ROOT_DIR', dirname(__DIR__));
-    }
+require_once __DIR__ . '/app.php';
 
-    if (!defined('BASE_URL')) {
-        $scriptPath = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
-        $pagesPos = strpos($scriptPath, '/pages/');
-        if ($pagesPos !== false) {
-            $base = substr($scriptPath, 0, $pagesPos);
-        } else {
-            $base = dirname($scriptPath);
+if (session_status() === PHP_SESSION_NONE) {
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => APP_BASE_PATH === '' ? '/' : APP_BASE_PATH . '/',
+        'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+    session_start();
+}
+
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
+    verify_csrf();
+}
+
+ob_start(static function (string $html): string {
+    return preg_replace_callback('/<form\b([^>]*)>/i', static function (array $match): string {
+        if (!preg_match('/\bmethod\s*=\s*(["\'])?post\1/i', $match[1])) {
+            return $match[0];
         }
-        $base = rtrim(str_replace('\\', '/', $base), '/');
-        define('BASE_URL', ($base === '.' || $base === '/') ? '' : $base);
-    }
+        return $match[0] . csrf_field();
+    }, $html) ?? $html;
+});
 
-    // Carrega o arquivo de configuração seguro se existir na máquina (não vai para o Git)
-    $configFile = __DIR__ . '/config.local.php';
-    if (file_exists($configFile)) {
-        require_once $configFile;
-    }
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-    // Conexão Híbrida: Tenta MySQL Local (Wamp); se não estiver disponível, usa a Nuvem
-    $conn = null;
-    $isLocal = in_array($_SERVER['SERVER_NAME'] ?? '', ['localhost', '127.0.0.1']) || php_sapi_name() === 'cli';
+$conn = null;
 
-    if ($isLocal) {
-        $hostLocal = defined('DB_HOST_LOCAL') ? DB_HOST_LOCAL : 'localhost';
-        $userLocal = defined('DB_USER_LOCAL') ? DB_USER_LOCAL : 'root';
-        $passLocal = defined('DB_PASS_LOCAL') ? DB_PASS_LOCAL : '';
-        $nameLocal = defined('DB_NAME_LOCAL') ? DB_NAME_LOCAL : 'game_db';
-        $conn = @new mysqli($hostLocal, $userLocal, $passLocal, $nameLocal);
-        if ($conn->connect_error) {
-            $conn = null;
+// Tenta conexão principal (Localhost)
+try {
+    $conn = @new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
+    $conn->set_charset('utf8mb4');
+} catch (Throwable $exception) {
+    // Se falhar e as credenciais da nuvem estiverem disponíveis no config.local.php, conecta na nuvem
+    if (defined('DB_HOST_CLOUD') && defined('DB_USER_CLOUD') && defined('DB_PASS_CLOUD') && defined('DB_NAME_CLOUD')) {
+        try {
+            $conn = new mysqli(DB_HOST_CLOUD, DB_USER_CLOUD, DB_PASS_CLOUD, DB_NAME_CLOUD, 3306);
+            $conn->set_charset('utf8mb4');
+        } catch (Throwable $cloudException) {
+            error_log($cloudException->getMessage());
+            http_response_code(503);
+            exit(APP_ENV === 'production'
+                ? 'Serviço temporariamente indisponível.'
+                : 'Falha ao conectar ao banco de dados: ' . e($cloudException->getMessage()));
         }
+    } else {
+        error_log($exception->getMessage());
+        http_response_code(503);
+        exit(APP_ENV === 'production'
+            ? 'Serviço temporariamente indisponível.'
+            : 'Falha ao conectar ao banco de dados: ' . e($exception->getMessage()));
     }
-
-    // Se estiver na nuvem ou o MySQL local estiver desligado, conecta no Alwaysdata
-    if (!$conn) {
-        $hostCloud = defined('DB_HOST_CLOUD') ? DB_HOST_CLOUD : 'mysql-pijogo2026.alwaysdata.net';
-        $userCloud = defined('DB_USER_CLOUD') ? DB_USER_CLOUD : 'pijogo2026';
-        $passCloud = defined('DB_PASS_CLOUD') ? DB_PASS_CLOUD : '';
-        $nameCloud = defined('DB_NAME_CLOUD') ? DB_NAME_CLOUD : 'pijogo2026_game_db';
-        $conn = @new mysqli($hostCloud, $userCloud, $passCloud, $nameCloud);
-    }
-
-    if (!$conn || $conn->connect_error) {
-        die("Erro ao conectar ao banco de dados: " . ($conn ? $conn->connect_error : 'Sem conexão disponível'));
-    }
-?>
+}

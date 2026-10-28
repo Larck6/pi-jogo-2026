@@ -1,32 +1,16 @@
-# Dependências e arquivos de ambiente
 .env
-*.log
+config.local.php
+uploads/perfis/*
+uploads/capturas/*
+uploads/videos/*
+uploads/atualizacoes/*
+uploads/mecanicas/*
+!uploads/.htaccess
+!uploads/**/.gitkeep
 
-# Arquivos temporários e de uploads de usuários gerados em teste
-uploads/*
-!uploads/.gitkeep
-!uploads/mecanicas/
-!uploads/atualizacoes/
 
-# Arquivos do sistema operacional e IDEs
-.DS_Store
-Thumbs.db
-desktop.ini
-.vscode/
-.idea/
-*.suo
-*.user
-
-# Compactados e arquivos de backup
-*.zip
-*.rar
-*.7z
-*.bak
-
-# Arquivo local com senhas e credenciais (NÃO subir para o GitHub)
+# Arquivos de credenciais locais (NUNCA sobem para o Git)
 credenciais_*.txt
 *.secret
-
-# Configurações locais com senhas (NUNCA sobem para o Git)
 *config.local.php
 *.local.php

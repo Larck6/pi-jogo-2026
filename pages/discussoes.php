@@ -4,74 +4,65 @@
     include "../include/login_php.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    verify_csrf();
 
     $action = $_POST["btn"] ?? '';
-    $idForum = $_POST['idf'] ?? null;
+    $idForum = (int) ($_POST['idf'] ?? 0);
 
     // CRIAR FÓRUM
     if ($action == "create" && $logado && $idUser) {
-        $nome_forum = $_POST['forum'] ?? '';
-        $description = $_POST['description'] ?? '';
+        $nome_forum = trim($_POST['forum'] ?? '');
+        $description = trim($_POST['description'] ?? '');
+        if ($nome_forum === '' || $description === '') exit('Preencha o título e a descrição.');
 
-        $conn->query("INSERT INTO forum (nome, description, fk_id_user) 
-                      VALUES ('$nome_forum', '$description', '$idUser')");
-
-        header("Location: /pi/pages/discussoes.php");
-        exit;
+        db_stmt($conn, 'INSERT INTO forum (nome, description, fk_id_user) VALUES (?, ?, ?)', 'ssi', $nome_forum, $description, $idUser);
+        redirect_to('/pages/discussoes.php');
     }
 
     // EXCLUIR FÓRUM
     if ($action == "delete" && $logado && $idUser) {
         if ($idForum) {
-            $conn->query("DELETE FROM forum_comentario WHERE fk_id_forum = '$idForum'");
-            $conn->query("DELETE FROM forum WHERE pk_id_forum = '$idForum' AND fk_id_user = '$idUser'");
+            db_stmt($conn, 'DELETE FROM forum WHERE pk_id_forum = ? AND fk_id_user = ?', 'ii', $idForum, $idUser);
         }
 
-        header("Location: /pi/pages/discussoes.php?show=$idForum#forum$idForum");
-        exit;
+        redirect_to('/pages/discussoes.php');
     }
 
     // COMENTAR
     if ($action == "comment" && $logado && $idUser) {
-        $comentario = $_POST['comentario'] ?? '';
+        $comentario = trim($_POST['comentario'] ?? '');
 
         if (!empty($comentario) && $idForum) {
-            $conn->query("INSERT INTO forum_comentario (comentario, fk_id_user, fk_id_forum) 
-                          VALUES ('$comentario', '$idUser', '$idForum')");
+            db_stmt($conn, 'INSERT INTO forum_comentario (comentario, fk_id_user, fk_id_forum) VALUES (?, ?, ?)', 'sii', $comentario, $idUser, $idForum);
         }
 
-        header("Location: /pi/pages/discussoes.php?show=$idForum#forum$idForum");
+        header('Location: ' . app_url('/pages/discussoes.php') . '?show=' . $idForum . '#forum' . $idForum);
         exit;
     }
 
     // EXCLUIR COMENTÁRIO
     if ($action == "delete_comment" && $logado && $idUser) {
-        $idComentario = $_POST['idc'] ?? null;
+        $idComentario = (int) ($_POST['idc'] ?? 0);
 
         if ($idComentario) {
-            $conn->query("
-                DELETE FROM forum_comentario 
-                WHERE pk_id_forum_comentario = '$idComentario' 
-                AND fk_id_user = '$idUser'
-            ");
+            db_stmt($conn, 'DELETE FROM forum_comentario WHERE pk_id_forum_comentario = ? AND fk_id_user = ?', 'ii', $idComentario, $idUser);
         }
 
-        header("Location: /pi/pages/discussoes.php?show=$idForum#forum$idForum");
+        header('Location: ' . app_url('/pages/discussoes.php') . '?show=' . $idForum . '#forum' . $idForum);
         exit;
     }
 
         // MOSTRAR COMENTÁRIOS
     if ($action == "see_comments") {
-        $idForum = $_POST['idf'];
-        header("Location: /pi/pages/discussoes.php?show=$idForum#forum$idForum");
+        $idForum = (int) ($_POST['idf'] ?? 0);
+        header('Location: ' . app_url('/pages/discussoes.php') . '?show=' . $idForum . '#forum' . $idForum);
         exit;
     }
 
     // FECHAR COMENTÁRIOS
     if ($action == "close_comments") {
         $show = null;
-        header("Location: /pi/pages/discussoes.php");
-        exit;
+        redirect_to('/pages/discussoes.php');
     }
 }
 
@@ -105,9 +96,9 @@ $select_forum = $conn->query("
 <!-- LISTA DE FÓRUNS -->
 <?php while ($row = $select_forum->fetch_assoc()) { ?>
     <div class="forum"  id="forum<?= $row["pk_id_forum"] ?>">
-    <h3><?= $row["nome"] ?></h3>
-    <p><?= $row["description"] ?></p>
-    <small>Por: <?= $row["name_user"] ?></small>
+    <h3><?= e($row["nome"]) ?></h3>
+    <p><?= e($row["description"]) ?></p>
+    <small>Por: <?= e($row["name_user"]) ?></small>
 
     <!-- EXCLUIR FÓRUM -->
     <?php if ($logado && $idUser == $row["fk_id_user"]) { ?>
@@ -142,14 +133,14 @@ $select_forum = $conn->query("
 
         <?php while ($c = $comentarios->fetch_assoc()) { ?>
             <div class="comentario">
-                <strong><?= $c["name_user"] ?>:</strong>
-                <?= $c["comentario"] ?>
+                <strong><?= e($c["name_user"]) ?>:</strong>
+                <?= e($c["comentario"]) ?>
 
                 <!-- EXCLUIR COMENTÁRIO -->
                 <?php if ($logado && $idUser == $c["fk_id_user"]) { ?>
                     <form method="POST" style="display:inline;">
                         <input type="hidden" name="idc" value="<?= $c["pk_id_forum_comentario"] ?>">
-                        <button type="submit" name="btn" value="delete_comment">🗑️</button>
+                        <button type="submit" name="btn" value="delete_comment" aria-label="Excluir comentário">Excluir</button>
                     </form>
                 <?php } ?>
             </div>

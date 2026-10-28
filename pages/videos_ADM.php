@@ -1,13 +1,10 @@
 <?php
-session_start();
 include "../include/conexao.php";
 include "../include/id.php";
 include "../include/login_php.php";
 
 // PROTEÇÃO ADM
-if (!isset($_SESSION['adm']) || $_SESSION['adm'] !== true) {
-    die("Acesso negado");
-}
+require_admin();
 
 // FILTRO
 $filtro = $_GET['filtro'] ?? 'todos';
@@ -33,22 +30,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Criar conteúdo
     if ($acao === "criar") {
-        $titulo = $conn->real_escape_string($_POST['titulo']);
-        $descricao = $conn->real_escape_string($_POST['descricao']);
-        $user = $_SESSION['id'];
+        $titulo = trim($_POST['titulo'] ?? '');
+        $descricao = trim($_POST['descricao'] ?? '');
+        $texto = trim($titulo . "\n" . $descricao);
 
         if ($tipo === "atualizacao") {
-            $conn->query("
-                INSERT INTO atualizacoes (titulo, descricao, data_post, fk_id_user)
-                VALUES ('$titulo', '$descricao', NOW(), $user)
-            ");
+            db_stmt($conn, 'INSERT INTO atualizacoes (texto, imagem) VALUES (?, NULL)', 's', $texto);
         }
 
         if ($tipo === "mecanica") {
-            $conn->query("
-                INSERT INTO mecanicas (titulo, descricao, fk_id_user)
-                VALUES ('$titulo', '$descricao', $user)
-            ");
+            db_stmt($conn, 'INSERT INTO mecanicas (texto, imagem) VALUES (?, NULL)', 's', $texto);
         }
 
         header("Location: {$_SERVER['PHP_SELF']}");
@@ -86,7 +77,7 @@ if ($result && $result->num_rows > 0) {
 
 <?php 
     include "../include/header.php";
-    include "../include/menu_ADM.php";
+    include "../include/menu_adm.php";
     include "../include/login.php";
 ?>
 

@@ -1,18 +1,64 @@
-const button = document.getElementById('openLogin');
-const loginBox = document.getElementById('loginBox');
+document.addEventListener('DOMContentLoaded', () => {
+  const accountButton = document.getElementById('openAccount');
+  const accountPanel = document.getElementById('accountPanel');
+  const accountBackdrop = document.getElementById('accountBackdrop');
+  const closeAccount = document.getElementById('closeAccount');
 
-// abrir ao clicar no botão
-button.addEventListener('click', (e) => {
-  e.stopPropagation(); // evita fechar imediatamente
-  loginBox.style.display = 'block';
-});
+  const openPanel = () => {
+    if (!accountPanel || !accountBackdrop || !accountButton) return;
 
-// evitar fechar ao clicar dentro do login
-loginBox.addEventListener('click', (e) => {
-  e.stopPropagation();
-});
+    accountPanel.classList.add('is-open');
+    accountBackdrop.classList.add('is-open');
+    accountPanel.setAttribute('aria-hidden', 'false');
+    accountButton.setAttribute('aria-expanded', 'true');
+  };
 
-// clicar em qualquer lugar da página fecha
-document.addEventListener('click', () => {
-  loginBox.style.display = 'none';
+  const closePanel = () => {
+    if (!accountPanel || !accountBackdrop || !accountButton) return;
+
+    accountPanel.classList.remove('is-open');
+    accountBackdrop.classList.remove('is-open');
+    accountPanel.setAttribute('aria-hidden', 'true');
+    accountButton.setAttribute('aria-expanded', 'false');
+  };
+
+  if (accountButton) {
+    accountButton.addEventListener('click', (event) => {
+      event.stopPropagation();
+      openPanel();
+    });
+  }
+
+  if (closeAccount) {
+    closeAccount.addEventListener('click', closePanel);
+  }
+
+  if (accountBackdrop) {
+    accountBackdrop.addEventListener('click', closePanel);
+  }
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closePanel();
+    }
+  });
+
+  document.querySelectorAll('[data-toggle-password]').forEach((button) => {
+    const input = document.querySelector(button.dataset.togglePassword);
+    const icon = button.querySelector('i');
+
+    if (!input) return;
+
+    button.addEventListener('click', () => {
+      const showingPassword = input.type === 'text';
+
+      input.type = showingPassword ? 'password' : 'text';
+      button.setAttribute('aria-label', showingPassword ? 'Mostrar senha' : 'Ocultar senha');
+
+      if (icon) {
+        icon.classList.toggle('fa-eye', showingPassword);
+        icon.classList.toggle('fa-eye-slash', !showingPassword);
+      }
+    });
+  });
 });

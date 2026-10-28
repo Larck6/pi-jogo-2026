@@ -2,54 +2,28 @@
     include "../include/conexao.php";
     include "../include/id.php";
     include "../include/login_php.php";
+    require_login();
 
-    $idVideo = $_SESSION["id_video"] ?? null;
+    $idVideo = (int) ($_SESSION["id_video"] ?? 0);
 
-    $sql = $conn->query("SELECT * FROM videos WHERE pk_id_video = '$idVideo'");
+    $sql = db_stmt($conn, 'SELECT * FROM videos WHERE pk_id_video = ? AND fk_id_user = ?', 'ii', $idVideo, $idUser)->get_result();
     $dados = $sql->fetch_assoc();
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-        $video = $_POST['nome'] ?? '';
-
-        $arquivo = $_FILES['video'];
-        $nomeArquivo = $arquivo['name'];
-        $tmp = $arquivo['tmp_name'];
-
-        $pastaFisico = dirname(__DIR__) . "/videos/";
-        if (!is_dir($pastaFisico)) {
-            mkdir($pastaFisico, 0755, true);
+        $video = trim($_POST['nome'] ?? '') ?: $dados['nome_video'];
+        $caminhoURL = $dados['caminho'];
+        if (isset($_FILES['video']) && $_FILES['video']['error'] !== UPLOAD_ERR_NO_FILE) {
+            $novo = store_upload($_FILES['video'], 'videos', 'video');
+            delete_uploaded_file($caminhoURL);
+            $caminhoURL = $novo;
         }
-        $caminhoFisico = $pastaFisico . $nomeArquivo;
-
-        $pastaURL = "../videos/";
-        $caminhoURL = $pastaURL . $nomeArquivo;
-
-        // Só move se enviou arquivo
-        if (!empty($nomeArquivo)) {
-            move_uploaded_file($tmp, $caminhoFisico);
-        }
-
-        // Se não alterou o nome, mantém o antigo
-        if ($video == '') {
-            $video = $dados['nome_video'];
-        }
-
-        // Se não enviou novo vídeo, mantém o antigo
-        if (empty($nomeArquivo)) {
-            $caminhoURL = $dados['caminho'];
-        }
-
-        $update = "UPDATE videos SET nome_video = '$video', caminho = '$caminhoURL' WHERE pk_id_video = '$idVideo' AND fk_id_user = '$idUser'";
-
-        if ($conn->query($update)) {
-            header("Location: /pi/pages/videos.php");
-            exit;
-        }
+        db_stmt($conn, 'UPDATE videos SET nome_video = ?, caminho = ? WHERE pk_id_video = ? AND fk_id_user = ?', 'ssii', $video, $caminhoURL, $idVideo, $idUser);
+        redirect_to('/pages/videos.php');
     }
 
     //SELECT VIDEO
-    $vid = $conn->query("SELECT * FROM videos WHERE pk_id_video = '$idVideo' AND fk_id_user = '$idUser'");
+    $vid = db_stmt($conn, 'SELECT * FROM videos WHERE pk_id_video = ? AND fk_id_user = ?', 'ii', $idVideo, $idUser)->get_result();
 ?>
 
 <?php
@@ -60,7 +34,7 @@
 
 <form method="POST" enctype="multipart/form-data">
     <input type="text" name="nome" placeholder="Nome do vídeo">
-    <input type="file" name="video">
+    <input type="file" name="video" accept="video/mp4,video/webm,video/ogg">
     <button type="submit">Atualizar</button>
 </form>
 
@@ -68,10 +42,10 @@
     while($row = $vid->fetch_assoc()){
 ?>
     <video class="img" controls>
-        <source src="<?= $row['caminho'] ?>" type="video/mp4">
+        <source src="<?= e($row['caminho']) ?>">
     </video>
 
-    <p><b><?= $row['nome_video'] ?></b></p>
+    <p><b><?= e($row['nome_video']) ?></b></p>
 <?php } ?>
 
 <script src="../js/login.js"></script>

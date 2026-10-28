@@ -122,9 +122,9 @@
     <div class="card">
         <?php if ($item["tipo"] == "review") { ?>
 
-            <h3>📝 Análise</h3>
-            <p><b><?= $item["usuario"] ?></b></p>
-            <p><?= $item["conteudo"] ?></p>
+            <h3>Análise</h3>
+            <p><b><?= e($item["usuario"]) ?></b></p>
+            <p><?= e($item["conteudo"]) ?></p>
 
             <div class="nota">
                 <?php for ($i=1;$i<=5;$i++) { ?>
@@ -136,30 +136,30 @@
 
         <?php if ($item["tipo"] == "imagem") { ?>
 
-            <h3>📸 Captura</h3>
-            <img class="img" src="<?= $item["caminho"] ?>">
-            <p><b><?= $item["titulo"] ?></b></p>
-            <p>Por: <?= $item["usuario"] ?></p>
+            <h3>Captura</h3>
+            <img class="img" src="<?= e($item["caminho"]) ?>" alt="<?= e($item["titulo"]) ?>">
+            <p><b><?= e($item["titulo"]) ?></b></p>
+            <p>Por: <?= e($item["usuario"]) ?></p>
 
         <?php } ?>
 
         <?php if ($item["tipo"] == "video") { ?>
 
-            <h3>🎥 Vídeo</h3>
+            <h3>Vídeo</h3>
             <video class="img" controls>
-                <source src="<?= $item["caminho"] ?>" type="video/mp4">
+                <source src="<?= e($item["caminho"]) ?>">
             </video>
-            <p><b><?= $item["titulo"] ?></b></p>
-            <p>Por: <?= $item["usuario"] ?></p>
+            <p><b><?= e($item["titulo"]) ?></b></p>
+            <p>Por: <?= e($item["usuario"]) ?></p>
 
         <?php } ?>
 
         <?php if ($item["tipo"] == "forum") { ?>
 
-            <h3>💬 Discussão</h3>
-            <p><b><?= $item["titulo"] ?></b></p>
-            <p><?= $item["descricao"] ?></p>
-            <p>Por: <?= $item["usuario"] ?></p>
+            <h3>Discussão</h3>
+            <p><b><?= e($item["titulo"]) ?></b></p>
+            <p><?= e($item["descricao"]) ?></p>
+            <p>Por: <?= e($item["usuario"]) ?></p>
             <small><?= $item["comentarios"] ?> comentários</small>
 
         <?php } ?>

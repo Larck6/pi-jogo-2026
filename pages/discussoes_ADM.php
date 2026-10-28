@@ -1,13 +1,10 @@
 <?php
-session_start();
 include "../include/conexao.php";
 include "../include/id.php";
 include "../include/login_php.php";
 
 // PROTEÇÃO ADM
-if (!isset($_SESSION['adm']) || $_SESSION['adm'] !== true) {
-    die("Acesso negado");
-}
+require_admin();
 
 // FILTRO
 $filtro = $_GET['filtro'] ?? 'todos';
@@ -74,7 +71,7 @@ if ($result && $result->num_rows > 0) {
 
 <?php 
     include "../include/header.php";
-    include "../include/menu_ADM.php";
+    include "../include/menu_adm.php";
     include "../include/login.php";
 ?>
 
@@ -82,9 +79,9 @@ if ($result && $result->num_rows > 0) {
 <?php foreach ($feed as $item): ?>
     <div class="card">
 
-        <h3><?= $item['nome'] ?></h3>
-        <p><strong>Autor:</strong> <?= $item['name_user'] ?></p>
-        <p><?= $item['description'] ?></p>
+        <h3><?= e($item['nome']) ?></h3>
+        <p><strong>Autor:</strong> <?= e($item['name_user']) ?></p>
+        <p><?= e($item['description']) ?></p>
 
         <!-- BOTÃO EXCLUIR TÓPICO -->
         <form method="POST">
@@ -126,7 +123,7 @@ if ($result && $result->num_rows > 0) {
                 if ($comentarios && $comentarios->num_rows > 0):
                     while ($c = $comentarios->fetch_assoc()):
                 ?>
-                        <p><strong><?= $c['name_user'] ?>:</strong> <?= $c['comentario'] ?></p>
+                        <p><strong><?= e($c['name_user']) ?>:</strong> <?= e($c['comentario']) ?></p>
 
                         <form method="POST">
                             <input type="hidden" name="tipo" value="comentario_forum">

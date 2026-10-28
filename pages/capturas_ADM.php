@@ -1,13 +1,10 @@
 <?php
-session_start();
 include "../include/conexao.php";
 include "../include/id.php";
 include "../include/login_php.php";
 
 // PROTEÇÃO ADM
-if (!isset($_SESSION['adm']) || $_SESSION['adm'] !== true) {
-    die("Acesso negado");
-}
+require_admin();
 
 // FILTRO
 $filtro = $_GET['filtro'] ?? 'todos';
@@ -64,7 +61,7 @@ $imagens = $conn->query("
 
 <?php 
     include "../include/header.php";
-    include "../include/menu_ADM.php";
+    include "../include/menu_adm.php";
     include "../include/login.php";
 ?>
 
@@ -74,12 +71,12 @@ $imagens = $conn->query("
         <div class="card">
 
             <!-- IMAGEM -->
-            <img src="<?= $item['caminho'] ?>"
-                 alt="<?= $item['nome_imagem'] ?>"
+            <img src="<?= e($item['caminho']) ?>"
+                 alt="<?= e($item['nome_imagem']) ?>"
                  width="250">
 
-            <h4><?= $item['nome_imagem'] ?></h4>
-            <p><strong>Autor:</strong> <?= $item['name_user'] ?></p>
+            <h4><?= e($item['nome_imagem']) ?></h4>
+            <p><strong>Autor:</strong> <?= e($item['name_user']) ?></p>
 
             <!-- BOTÃO EXCLUIR -->
             <form method="POST">
@@ -115,7 +112,7 @@ $imagens = $conn->query("
                     if ($comentarios && $comentarios->num_rows > 0):
                         while ($c = $comentarios->fetch_assoc()):
                     ?>
-                            <p><?= $c['comentario'] ?></p>
+                            <p><?= e($c['comentario']) ?></p>
                             <form method="POST">
                                 <input type="hidden" name="tipo" value="comentario_imagem">
                                 <input type="hidden" name="id" value="<?= (int)$c['pk_id_feedback_imagem'] ?>">

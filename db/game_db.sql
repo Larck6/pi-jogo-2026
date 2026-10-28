@@ -1,10 +1,12 @@
+-- Arquivo legado mantido para referência. Para novas instalações use production_schema.sql.
 create database game_db;
 
 create table user(
 pk_id_user int not null auto_increment primary key,
 name_user varchar(30) not null,
 email_user varchar(30) not null,
-password_user varchar(60) not null,
+password_user varchar(255) not null,
+foto_user varchar(255),
 quant_feedback int,
 adm boolean DEFAULT FALSE
 );

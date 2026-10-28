@@ -4,9 +4,7 @@
     include "../include/login_php.php";
 
     // PROTEÇÃO ADM
-    if (!isset($_SESSION['adm']) || $_SESSION['adm'] !== true) {
-        die("Acesso negado");
-    }
+    require_admin();
 
     // FILTRO
     $filtro = $_GET['filtro'] ?? 'todos';
@@ -34,22 +32,16 @@
 
         if ($acao == "criar") {
 
-            $titulo = $_POST['titulo'];
-            $descricao = $_POST['descricao'];
-            $user = $_SESSION['id'];
+            $titulo = trim($_POST['titulo'] ?? '');
+            $descricao = trim($_POST['descricao'] ?? '');
+            $texto = trim($titulo . "\n" . $descricao);
 
             if ($tipo == "atualizacao") {
-                $conn->query("
-                    INSERT INTO atualizacoes (titulo, descricao, data_post, fk_id_user)
-                    VALUES ('$titulo', '$descricao', NOW(), $user)
-                ");
+                db_stmt($conn, 'INSERT INTO atualizacoes (texto, imagem) VALUES (?, NULL)', 's', $texto);
             }
 
             if ($tipo == "mecanica") {
-                $conn->query("
-                    INSERT INTO mecanicas (titulo, descricao, fk_id_user)
-                    VALUES ('$titulo', '$descricao', $user)
-                ");
+                db_stmt($conn, 'INSERT INTO mecanicas (texto, imagem) VALUES (?, NULL)', 's', $texto);
             }
 
             header("Location: ".$_SERVER['PHP_SELF']);
@@ -58,11 +50,11 @@
 
         if ($acao == "delete") {
             if ($tipo == "atualizacao") {
-                $conn->query("DELETE FROM atualizacoes WHERE pk_id_atualizacao = $id");
+                db_stmt($conn, 'DELETE FROM atualizacoes WHERE pk_id_atualizacoes = ?', 'i', $id);
             }
 
             if ($tipo == "mecanica") {
-                $conn->query("DELETE FROM mecanicas WHERE pk_id_mecanica = $id");
+                db_stmt($conn, 'DELETE FROM mecanicas WHERE pk_id_mecanicas = ?', 'i', $id);
             }
 
             if ($tipo == "review") {
@@ -222,7 +214,7 @@
 
 <?php
     include "../include/header.php";
-    include "../include/menu_ADM.php";
+    include "../include/menu_adm.php";
     include "../include/login.php";
 ?>
 
@@ -245,32 +237,32 @@
     <div class="card">
         <!-- CONTEÚDO -->
         <?php if ($item["tipo"] == "imagem") { ?>
-        <img src="<?= $item["caminho"] ?>" width="200">
+        <img src="<?= e($item["caminho"]) ?>" width="200" alt="Conteúdo enviado">
         <?php } ?>
 
         <?php if ($item["tipo"] == "review") { ?>
-        <p><b><?= $item["usuario"] ?></b></p>
-        <p><b><?= $item["conteudo"] ?></b></p>
+        <p><b><?= e($item["usuario"]) ?></b></p>
+        <p><b><?= e($item["conteudo"]) ?></b></p>
         <p><?= $item["nota"] ?></p>
         <?php } ?>
 
         <?php if ($item["tipo"] == "video") { ?>
         <video width="250" controls>
-        <source src="<?= $item["caminho"] ?>">
+        <source src="<?= e($item["caminho"]) ?>">
         </video>
         <?php } ?>
 
         <?php if ($item["tipo"] == "forum") { ?>
-        <p><b><?= $item["titulo"] ?></b></p>
-        <p><?= $item["descricao"] ?></p>
+        <p><b><?= e($item["titulo"]) ?></b></p>
+        <p><?= e($item["descricao"]) ?></p>
         <?php } ?>
 
         <?php if ($item["tipo"] == "mecanica") { ?>
-        <p><?= $item["texto"] ?></p>
+        <p><?= e($item["texto"]) ?></p>
         <?php } ?>
 
         <?php if ($item["tipo"] == "atualizacao") { ?>
-        <p><?= $item["texto"] ?></p>
+        <p><?= e($item["texto"]) ?></p>
         <?php } ?>
 
         <!-- EXCLUIR POST -->
@@ -306,7 +298,7 @@
 
                 while($c = $comentarios->fetch_assoc()) {
                     ?>
-                    <p><?= $c['comentario'] ?></p>
+                    <p><?= e($c['comentario']) ?></p>
 
                     <form method="POST">
                         <input type="hidden" name="tipo" value="comentario_video">
@@ -325,7 +317,7 @@
 
                 while($c = $comentarios->fetch_assoc()) {
                     ?>
-                    <p><?= $c['comentario'] ?></p>
+                    <p><?= e($c['comentario']) ?></p>
 
                     <form method="POST">
                         <input type="hidden" name="tipo" value="comentario_imagem">
@@ -344,7 +336,7 @@
 
                 while($c = $comentarios->fetch_assoc()) {
                     ?>
-                    <p><?= $c['comentario'] ?></p>
+                    <p><?= e($c['comentario']) ?></p>
 
                     <form method="POST">
                         <input type="hidden" name="tipo" value="comentario_forum">

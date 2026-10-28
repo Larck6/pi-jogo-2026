@@ -4,9 +4,7 @@ include "../include/id.php";
 include "../include/login_php.php";
 
 // PROTEÇÃO ADM
-if (!isset($_SESSION['adm']) || $_SESSION['adm'] !== true) {
-    die("Acesso negado");
-}
+require_admin();
 
 // =======================
 // AÇÕES DO ADMINISTRADOR
@@ -52,7 +50,7 @@ if ($result && $result->num_rows > 0) {
 
 <?php 
     include "../include/header.php";
-    include "../include/menu_ADM.php";
+    include "../include/menu_adm.php";
     include "../include/login.php";
 ?>
 
@@ -60,10 +58,10 @@ if ($result && $result->num_rows > 0) {
 <?php foreach ($feed as $item): ?>
     <div class="card">
 
-        <h3>Feedback de <?= $item['name_user'] ?></h3>
+        <h3>Feedback de <?= e($item['name_user']) ?></h3>
 
         <p><strong>Comentário:</strong></p>
-        <p><?= $item['feedback'] ?></p>
+        <p><?= e($item['feedback']) ?></p>
 
         <p><strong>Nota:</strong> ⭐ <?= $item['nota'] ?>/5</p>
 

@@ -4,16 +4,9 @@
     include "../include/login_php.php";
 
     // PROTEÇÃO ADM
-    if (!isset($_SESSION['adm']) || $_SESSION['adm'] !== true) {
-        die("Acesso negado");
-    }
+    require_admin();
 
     // DIRETÓRIO DE UPLOAD
-    $diretorio = "../uploads/atualizacoes/";
-    if (!is_dir($diretorio)) {
-        mkdir($diretorio, 0755, true);
-    }
-
     // =======================
     // AÇÕES DO ADMINISTRADOR
     // =======================
@@ -27,28 +20,16 @@
             die("O texto não pode estar vazio.");
         }
 
-        $texto = $conn->real_escape_string($texto);
         $caminhoBanco = "";
 
         // Upload da imagem
         if (!empty($_FILES['imagem']['name'])) {
-            $nomeImagem = time() . "_" . basename($_FILES['imagem']['name']);
-            $caminhoCompleto = $diretorio . $nomeImagem;
-
-            if (move_uploaded_file($_FILES['imagem']['tmp_name'], $caminhoCompleto)) {
-                $caminhoBanco = "uploads/atualizacoes/" . $nomeImagem;
-            } else {
-                die("Erro ao enviar a imagem.");
-            }
+            $caminhoBanco = store_upload($_FILES['imagem'], 'atualizacoes', 'image');
         }
 
         // CRIAR ATUALIZAÇÃO
         if ($acao === "criar") {
-            $sql = "INSERT INTO atualizacoes (texto, imagem) 
-                    VALUES ('$texto', '$caminhoBanco')";
-            if (!$conn->query($sql)) {
-                die("Erro ao inserir: " . $conn->error);
-            }
+            db_stmt($conn, 'INSERT INTO atualizacoes (texto, imagem) VALUES (?, ?)', 'ss', $texto, $caminhoBanco);
         }
 
         // EDITAR ATUALIZAÇÃO
@@ -56,17 +37,9 @@
             $id = (int)$id;
 
             if (!empty($caminhoBanco)) {
-                $sql = "UPDATE atualizacoes 
-                        SET texto='$texto', imagem='$caminhoBanco'
-                        WHERE pk_id_atualizacoes=$id";
+                db_stmt($conn, 'UPDATE atualizacoes SET texto=?, imagem=? WHERE pk_id_atualizacoes=?', 'ssi', $texto, $caminhoBanco, $id);
             } else {
-                $sql = "UPDATE atualizacoes 
-                        SET texto='$texto'
-                        WHERE pk_id_atualizacoes=$id";
-            }
-
-            if (!$conn->query($sql)) {
-                die("Erro ao atualizar: " . $conn->error);
+                db_stmt($conn, 'UPDATE atualizacoes SET texto=? WHERE pk_id_atualizacoes=?', 'si', $texto, $id);
             }
         }
 
@@ -78,10 +51,7 @@
             $result = $conn->query("SELECT imagem FROM atualizacoes WHERE pk_id_atualizacoes=$id");
             if ($result && $result->num_rows > 0) {
                 $row = $result->fetch_assoc();
-                $arquivo = "../" . $row['imagem'];
-                if (!empty($row['imagem']) && file_exists($arquivo)) {
-                    unlink($arquivo);
-                }
+                delete_uploaded_file($row['imagem'] ?? null);
             }
 
             $conn->query("DELETE FROM atualizacoes WHERE pk_id_atualizacoes=$id");
@@ -105,7 +75,7 @@
 
 <?php
     include "../include/header.php";
-    include "../include/menu_ADM.php";
+    include "../include/menu_adm.php";
     include "../include/login.php";
 ?>
 
@@ -124,10 +94,10 @@
         <form method="POST" enctype="multipart/form-data">
             <input type="hidden" name="id" value="<?= $item['pk_id_atualizacoes'] ?>">
 
-            <textarea name="texto" required><?= $item['texto'] ?></textarea>
+            <textarea name="texto" required><?= e($item['texto']) ?></textarea>
 
             <?php if (!empty($item['imagem'])): ?>
-                <img src="../<?= $item['imagem'] ?>" width="200"><br><br>
+                <img src="<?= e($item['imagem']) ?>" width="200" alt="Imagem da atualização"><br><br>
             <?php endif; ?>
 
             <input type="file" name="imagem" accept="image/*">
