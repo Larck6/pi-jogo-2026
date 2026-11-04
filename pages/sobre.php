@@ -64,6 +64,28 @@
     </a>
 </section>
 
+<section class="apresentacao-section" aria-labelledby="apresentacao-title">
+    <div class="apresentacao-heading">
+        <div class="apresentacao-copy">
+            <span>Apresentação Oficial</span>
+            <h2 id="apresentacao-title">Projeto Integrador 2026</h2>
+            <p>
+                Confira a apresentação interativa do jogo <strong>Lendas do Vale</strong> desenvolvida pela turma do Terceirão Sesc/Senac.
+                Navegue pelos 20 slides, explore as lendas, veja o vídeo promocional e ative a trilha sonora retrô.
+            </p>
+        </div>
+
+        <a class="apresentacao-link-fullscreen" href="<?= e(app_url('/apresentacao/')) ?>" target="_blank" rel="noopener noreferrer">
+            <i class="fa fa-expand" aria-hidden="true"></i>
+            <span>Abrir em Tela Cheia</span>
+        </a>
+    </div>
+
+    <div class="apresentacao-frame-wrapper">
+        <iframe src="<?= e(app_url('/apresentacao/')) ?>" title="Apresentação Interativa - Lendas do Vale" allow="fullscreen; autoplay" loading="lazy"></iframe>
+    </div>
+</section>
+
 <div class="seguralendas">
     <h1 class="titulolenda">Chefões</h1>
     <p class="chefes-intro">Conheça as lendas que se tornam grandes confrontos em Lendas do Vale. Clique em um card para descobrir sua história.</p>

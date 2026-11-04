@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lendas do Vale | Apresentação Viva - PI Terceirão Sesc Senac 2026</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@400;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/style_apresentacao.css">
+  <link rel="icon" type="image/png" href="assets/personagens/emblema_transparent.png">
+</head>
+<body>
+  <div id="presentation-app">
+    <canvas id="bg-particles-canvas"></canvas>
+
+    <div class="crt-overlay"></div>
+    <div class="crt-scanlines"></div>
+
+    <div id="magnifier-lens" class="magnifier-lens"></div>
+
+    <!-- HUD SUPERIOR -->
+    <header class="top-hud">
+      <div class="brand-section">
+        <img src="assets/personagens/emblema_transparent.png" alt="Emblema Terceirão Sesc Senac" class="brand-emblem-mini" id="quick-logo">
+        <div class="brand-titles">
+          <span class="brand-title">LENDAS DO VALE</span>
+          <span class="brand-subtitle">PI Terceirão Sesc Senac 2026 &bull; Cidades Gêmeas</span>
+        </div>
+      </div>
+
+      <div class="timeline-progress-container">
+        <div class="progress-labels">
+          <span id="current-slide-title">Capa Oficial</span>
+          <span><strong id="current-slide-num">01</strong> / <span id="total-slides-num">20</span></span>
+        </div>
+        <div class="progress-track">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <!-- Alternador entre Tela de Jogo e Slide Canva Original -->
+        <button id="btn-toggle-view" class="hud-btn hud-btn-toggle-view" title="Alternar entre Tela Viva de Jogo e Slide Original do Canva (Tecla V)">🎮 TELA DO JOGO</button>
+        <button id="btn-bgm" class="hud-btn" title="Trilha Sonora Chiptune (Tecla B)">🎵 MÚSICA</button>
+        <button id="btn-mute" class="hud-btn hud-btn-icon-only" title="Mutar/Desmutar Sons (Tecla M)">🔊</button>
+        <button id="btn-magnifier" class="hud-btn" title="Modo Lupa de Aumento (Tecla L)">🔍 LUPA</button>
+        <button id="btn-overview" class="hud-btn" title="Ver Todos os Slides (Tecla O)">📑 SLIDES</button>
+        <button id="btn-autoplay" class="hud-btn" title="Apresentação Automática (Tecla A)">▶ AUTO</button>
+        <button id="btn-fullscreen" class="hud-btn hud-btn-icon-only" title="Tela Cheia (Tecla F)">🗖</button>
+      </div>
+    </header>
+
+    <!-- VIEWPORT DA CÂMERA -->
+    <main class="stage-viewport" id="stage-viewport">
+      <div class="camera-rig" id="camera-rig">
+        <div class="slide-frame" id="slide-frame">
+
+          <!-- SLIDE 1: CAPA VIVA ESTILIZADA -->
+          <article class="slide active" data-slide="1">
+            <div class="slide-game-screen">
+              <img src="assets/cenarios/fundo_1.png" class="game-bg-layer" alt="Cenário Vale do Iguaçu">
+              <div class="game-bg-tint"></div>
+              <div style="flex: 1.1; display: flex; flex-direction: column; justify-content: center; padding: 5% 6%; z-index: 5;">
+                <span class="rpg-title-tag">★ PROJETO INTEGRADOR 2026 ★</span>
+                <h1 class="rpg-main-title" style="font-size: clamp(2.2rem, 4vw, 3.8rem); line-height: 1.15;">LENDAS DO VALE</h1>
+                <h2 style="font-family: var(--font-sans); font-size: 1.5rem; color: var(--color-parchment); margin-bottom: 8px;">TERCEIRÃO SESC SENAC</h2>
+                <div style="font-family: var(--font-retro); font-size: 3rem; color: rgba(226, 183, 69, 0.45); margin-bottom: 20px;">2026</div>
+                <p class="rpg-desc-text" style="max-width: 540px;">
+                  Um jogo 2D de plataforma e aventura inspirado nas lendas, pontos turísticos, mistérios e memórias de <strong>União da Vitória (PR)</strong> e <strong>Porto União (SC)</strong>.
+                </p>
+                <button id="btn-start-presentation" class="hud-btn active" style="padding: 16px 28px; font-family: var(--font-retro); font-size: 12px; width: fit-content;">
+                  INICIAR APRESENTAÇÃO ▶
+                </button>
+              </div>
+              <div class="char-stage-interactive">
+                <div class="emblem-pulse-ring" style="width: 380px; height: 380px;"></div>
+                <img src="assets/personagens/emblema_transparent.png" class="char-sprite-loop char-gaucho-loop" style="max-width: 75%; cursor: pointer;" data-inspect="gaucho" title="Clique para inspecionar o Gaúcho!">
+              </div>
+            </div>
+            <img class="slide-canvas-view" src="assets/slides/slide_1.png" alt="Slide 1 Canva">
+          </article>
+
+          <!-- SLIDE 2: SOBRE O PROJETO -->
+          <article class="slide" data-slide="2">
+            <div class="slide-game-screen">
+              <img src="assets/cenarios/cenario_1.png" class="game-bg-layer" alt="Ponte do Arco e Rio Iguaçu">
+              <div class="game-bg-tint"></div>
+              <div style="flex: 1.15; padding: 4% 5%; display: flex; flex-direction: column; justify-content: center; z-index: 5;">
+                <div class="rpg-dialog-box">
+                  <span class="rpg-title-tag">CONHEÇA A PROPOSTA</span>
+                  <h2 class="rpg-main-title">SOBRE O PROJETO</h2>
+                  <p class="rpg-desc-text">
+                    A turma do <strong>terceiro ano 2026</strong> do ensino médio integrado ao técnico Sesc/Senac pensou em conjunto para criar o <strong>PI (Projeto Integrador)</strong>: um jogo 2D baseado nas lendas, pontos turísticos e figuras importantes das nossas cidades.
+                  </p>
+                  <p class="rpg-desc-text">
+                    O objetivo do projeto é criar um jogo para que o público se divirta enquanto conhece mais da história das nossas cidades, uma forma interativa de aprendizado sobre as <strong>cidades gêmeas</strong>. A ideia é valorizar a memória local e manter vivas as tradições que fazem parte da cultura regional.
+                  </p>
+                  <div class="rpg-stats-bar">
+                    <div class="stat-box"><span class="stat-label">DIVISÃO</span><span class="stat-value">6 Equipes</span></div>
+                    <div class="stat-box"><span class="stat-label">GÊNERO</span><span class="stat-value">Aventura 2D</span></div>
+                    <div class="stat-box"><span class="stat-label">CIDADES</span><span class="stat-value">União & Porto União</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="char-stage-interactive">
+                <div class="magic-pedestal"></div>
+                <div class="mate-steam"></div>
+                <img src="assets/personagens/gaucho_transparent.png" class="char-sprite-loop char-gaucho-loop" data-inspect="gaucho" alt="Gaúcho Hero">
+              </div>
+            </div>
+            <img class="slide-canvas-view" src="assets/slides/slide_2.png" alt="Slide 2 Canva">
+          </article>
+
+          <!-- SLIDE 3: GRUPOS (SELEÇÃO DE EQUIPES) -->
+          <article class="slide" data-slide="3">
+            <div class="slide-game-screen">
+              <img src="assets/cenarios/cenario_6.png" class="game-bg-layer" alt="Taverna das Guildas">
+              <div class="game-bg-tint"></div>
+              <div style="flex: 1; padding: 3% 4%; display: flex; flex-direction: column; justify-content: center; z-index: 5;">
+                <div style="text-align: center; margin-bottom: 16px;">
+                  <span class="rpg-title-tag">ORGANIZAÇÃO DA TURMA</span>
+                  <h2 class="rpg-main-title">AS 6 EQUIPES DO PROJETO</h2>
+                </div>
+                <div class="guild-cards-grid">
+                  <div class="guild-card">
+                    <div class="guild-badge-icon">🎮</div>
+                    <div class="guild-name">Game Design</div>
+                    <div class="guild-members-list">Mateus, João, Thiarles, Jhonatan</div>
+                  </div>
+                  <div class="guild-card">
+                    <div class="guild-badge-icon">🎨</div>
+                    <div class="guild-name">Design Gráfico</div>
+                    <div class="guild-members-list">Maria, Saimon, Márcio, Lincoln</div>
+                  </div>
+                  <div class="guild-card">
+                    <div class="guild-badge-icon">🎵</div>
+                    <div class="guild-name">Sonoro</div>
+                    <div class="guild-members-list">Isabela, Ryan, José, Ricardo</div>
+                  </div>
+                  <div class="guild-card">
+                    <div class="guild-badge-icon">💻</div>
+                    <div class="guild-name">Programação Jogo</div>
+                    <div class="guild-members-list">Kauã, Eduardo, Isabelly, Mariane</div>
+                  </div>
+                  <div class="guild-card">
+                    <div class="guild-badge-icon">🌐</div>
+                    <div class="guild-name">Programação Site</div>
+                    <div class="guild-members-list">Guilherme, Ricardo, José, Julia Lima</div>
+                  </div>
+                  <div class="guild-card">
+                    <div class="guild-badge-icon">📣</div>
+                    <div class="guild-name">Marketing</div>
+                    <div class="guild-members-list">Anna, Julia Lúcio, Alana, Gabrieli</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <img class="slide-canvas-view" src="assets/slides/slide_3.png" alt="Slide 3 Canva">
+          </article>
+
+          <!-- SLIDE 4: GAME DESIGN -->
+          <article class="slide" data-slide="4">
+            <div class="slide-game-screen">
+              <img src="assets/cenarios/cenario_4.png" class="game-bg-layer" alt="Level Design">
+              <div class="game-bg-tint"></div>
+              <div style="flex: 1.1; padding: 4% 5%; display: flex; flex-direction: column; justify-content: center; z-index: 5;">
+                <div class="rpg-dialog-box">
+                  <span class="rpg-title-tag">PLANEJAMENTO & MECÂNICAS</span>
+                  <h2 class="rpg-main-title">GAME DESIGN</h2>
+                  <p class="rpg-desc-text">
+                    O grupo de Game Design atua na concepção e planejamento do jogo, desde a ideia inicial até a definição de seus principais elementos. É responsável por estabelecer as <strong>regras, objetivos, mecânicas, desafios e curva de jogabilidade</strong>.
+                  </p>
+                  <p class="rpg-desc-text">
+                    Trabalha em conjunto com as demais equipes para transformar conceitos e folclores em desafios interativos memoráveis.
+                  </p>
+                  <div class="rpg-stats-bar">
+                    <div class="stat-box"><span class="stat-label">RESPONSÁVEIS</span><span class="stat-value">Mateus, João, Thiarles, Jhonatan</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="char-stage-interactive">
+                <div class="blueprint-art-frame">
+                  <div class="coin-loop-3d"></div>
+                  <img src="assets/cenarios/cenario_4.png" class="blueprint-img" alt="Blueprint Game Design">
+                </div>
+              </div>
+            </div>
+            <img class="slide-canvas-view" src="assets/slides/slide_4.png" alt="Slide 4 Canva">
+          </article>
+
+          <!-- SLIDE 5: DESIGN GRÁFICO -->
+          <article class="slide" data-slide="5">
+            <div class="slide-game-screen">
+              <img src="assets/cenarios/cenario_8.png" class="game-bg-layer" alt="Atelier de Pixel Art">
+              <div class="game-bg-tint"></div>
+              <div style="flex: 1.1; padding: 4% 5%; display: flex; flex-direction: column; justify-content: center; z-index: 5;">
+                <div class="rpg-dialog-box">
+                  <span class="rpg-title-tag">ARTE & IDENTIDADE VISUAL</span>
+                  <h2 class="rpg-main-title">DESIGN GRÁFICO</h2>
+                  <p class="rpg-desc-text">
+                    Responsável pela criação da <strong>identidade visual em pixel art</strong>: elaboração de personagens, cenários, objetos, interfaces e materiais visuais de divulgação.
+                  </p>
+                  <p class="rpg-desc-text">
+                    Garante harmonia estética inspirada nas florestas de araucárias, construções históricas e lendas regionais.
+                  </p>
+                  <div class="rpg-stats-bar">
+                    <div class="stat-box"><span class="stat-label">RESPONSÁVEIS</span><span class="stat-value">Maria, Saimon, Márcio, Lincoln</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="char-stage-interactive">
+                <div class="blueprint-art-frame">
+                  <img src="assets/cenarios/cenario_8.png" class="blueprint-img" alt="Galeria Pixel Art">
+                </div>
+              </div>
+            </div>
+            <img class="slide-canvas-view" src="assets/slides/slide_5.png" alt="Slide 5 Canva">
+          </article>
+
+          <!-- SLIDE 6: PERSONAGENS E ELEMENTOS (LINEUP) -->
+          <article class="slide" data-slide="6">
+            <div class="slide-game-screen">
+              <img src="assets/cenarios/fundo_2.png" class="game-bg-layer" alt="Lineup Épico">
+              <div class="game-bg-tint"></div>
+              <div style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3%; z-index: 5;">
+                <span class="rpg-title-tag">CRIATURAS, HERÓIS & VILÕES</span>
+                <h2 class="rpg-main-title" style="margin-bottom: 24px; text-align: center;">PERSONAGENS E ELEMENTOS CRIADOS</h2>
+                
+                <div style="display: flex; gap: 20px; align-items: flex-end; justify-content: center; width: 90%;">
+                  <img src="assets/personagens/gaucho_transparent.png" class="char-sprite-loop char-gaucho-loop" style="height: 140px; cursor: pointer;" data-inspect="gaucho" title="Gaúcho">
+                  <img src="assets/personagens/fantasma_transparent.png" class="char-sprite-loop char-fantasma-loop" style="height: 135px; cursor: pointer;" data-inspect="fantasma" title="Fantasma">
+                  <img src="assets/personagens/soldado_transparent.png" class="char-sprite-loop char-soldado-loop" style="height: 140px; cursor: pointer;" data-inspect="soldado" title="Soldado">
+                  <img src="assets/personagens/monge.png" class="char-sprite-loop char-monge-loop" style="height: 155px; cursor: pointer;" data-inspect="monge" title="Monge">
+                  <img src="assets/personagens/diabo.png" class="char-sprite-loop char-diabo-loop" style="height: 165px; cursor: pointer;" data-inspect="diabo" title="Diabo">
+                  <img src="assets/personagens/cobra.png" class="char-sprite-loop char-cobra-loop" style="height: 130px; cursor: pointer;" data-inspect="cobra" title="Cobra">
+                </div>
+                <p style="margin-top: 24px; font-size: 13px; color: var(--color-accent-gold); font-family: var(--font-retro);">
+                  (Clique em qualquer personagem para dar Zoom e ouvir seu som!)
+                </p>
+              </div>
+            </div>
+            <img class="slide-canvas-view" src="assets/slides/slide_6.png" alt="Slide 6 Canva">
+          </article>
+
+          <!-- SLIDE 7: GAÚCHO - PLAYER -->
+          <article class="slide" data-slide="7">
+            <div class="slide-game-screen">
+              <img src="assets/cenarios/cenario_3.png" class="game-bg-layer" alt="Cenário Campos do Vale">
+              <div class="game-bg-tint"></div>
+              <div style="flex: 1.1; padding: 4% 5%; display: flex; flex-direction: column; justify-content: center; z-index: 5;">
+                <div class="rpg-dialog-box">
+                  <span class="rpg-title-tag">HERÓI PRINCIPAL</span>
+                  <h2 class="rpg-main-title">GAÚCHO - PLAYER</h2>
+                  <p class="rpg-desc-text">
+                    O personagem principal do jogo, pensado pela equipe de Game Design e desenhado pelo grupo de Design Gráfico, criado para representar a <strong>cultura gaúcha e tropeira</strong>, que está muito presente em nossa região.
+                  </p>
+                  <div class="rpg-stats-bar">
+                    <button class="hud-btn" onclick="window.GameAudio.playGauchoTheme()" title="Tocar gaita">🎵 Tocar Gaita do Sul</button>
+                    <button class="hud-btn active" data-inspect="gaucho">🔍 Ver Atributos RPG</button>
+                  </div>
+                </div>
+              </div>
+              <div class="char-stage-interactive">
+                <div class="magic-pedestal"></div>
+                <div class="mate-steam"></div>
+                <img src="assets/personagens/gaucho_transparent.png" class="char-sprite-loop char-gaucho-loop" data-inspect="gaucho" alt="Gaúcho Hero">
+              </div>
+            </div>
+            <img class="slide-canvas-view" src="assets/slides/slide_7.png" alt="Slide 7 Canva">
+          </article>
+
+          <!-- SLIDE 8: FANTASMA - GUIA DO TUTORIAL -->
+          <article class="slide" data-slide="8">
+            <div class="slide-game-screen">
+              <img src="assets/cenarios/cenario_5.png" class="game-bg-layer" alt="Ruínas Antigas">
+              <div class="game-bg-tint"></div>
+              <div style="flex: 1.1; padding: 4% 5%; display: flex; flex-direction: column; justify-content: center; z-index: 5;">
+                <div class="rpg-dialog-box">
+                  <span class="rpg-title-tag">ESPÍRITO MENTOR</span>
+                  <h2 class="rpg-main-title">FANTASMA - TUTORIAL</h2>
+                  <p class="rpg-desc-text">
+                    O personagem que guia o tutorial, tem o objetivo de ajudar o jogador a compreender como tudo funciona dentro do jogo e explica todos os <strong>comandos e mecânicas necessários</strong>.
+                  </p>
+                  <div class="rpg-stats-bar">
+                    <button class="hud-btn" onclick="window.GameAudio.playFantasmaTheme()">🎵 Ouvir Eco Espectral</button>
+                    <button class="hud-btn active" data-inspect="fantasma">🔍 Ver Atributos RPG</button>
+                  </div>
+                </div>
+              </div>
+              <div class="char-stage-interactive">
+                <div class="magic-pedestal" style="background: radial-gradient(ellipse at center, rgba(77, 238, 234, 0.8), transparent 70%);"></div>
+                <img src="assets/personagens/fantasma_transparent.png" class="char-sprite-loop char-fantasma-loop" data-inspect="fantasma" alt="Fantasma">
+              </div>
+            </div>
+            <img class="slide-canvas-view" src="assets/slides/slide_8.png" alt="Slide 8 Canva">
+          </article>
+
+          <!-- SLIDE 9: SOLDADO -->
+          <article class="slide" data-slide="9">
+            <div class="slide-game-screen">
+              <img src="assets/cenarios/cenario_7.png" class="game-bg-layer" alt="Fortificação Militar">
+              <div class="game-bg-tint"></div>
+              <div style="flex: 1.1; padding: 4% 5%; display: flex; flex-direction: column; justify-content: center; z-index: 5;">
+                <div class="rpg-dialog-box">
+                  <span class="rpg-title-tag">MEMÓRIA HISTÓRICA</span>
+                  <h2 class="rpg-main-title">SOLDADO</h2>
+                  <p class="rpg-desc-text">
+                    O personagem representa os soldados, especialmente por conta que as cidades são marcadas por conflitos históricos e a forte <strong>presença militar na região</strong>, remetendo aos tempos da Guerra do Contestado.
+                  </p>
+                  <div class="rpg-stats-bar">
+                    <button class="hud-btn" onclick="window.GameAudio.playSoldadoTheme()">🎵 Toque de Corneta</button>
+                    <button class="hud-btn active" data-inspect="soldado">🔍 Ver Atributos RPG</button>
+                  </div>
+                </div>
+              </div>
+              <div class="char-stage-interactive">
+                <div class="magic-pedestal"></div>
+                <img src="assets/personagens/soldado_transparent.png" class="char-sprite-loop char-soldado-loop" data-inspect="soldado" alt="Soldado">
+              </div>
+            </div>
+            <img class="slide-canvas-view" src="assets/slides/slide_9.png" alt="Slide 9 Canva">
+          </article>
+
+          <!-- SLIDE 10: MAQUINISTA E A MARIA FUMAÇA -->
+          <article class="slide" data-slide="10">
+            <div class="slide-game-screen">
+              <img src="assets/cenarios/maria_fumaca_cenario.png" class="game-bg-layer" style="filter: brightness(0.65) saturate(1.2);" alt="Estação e Locomotiva 310">
+              <div class="game-bg-tint"></div>
+              <div style="flex: 1.05; padding: 4% 5%; display: flex; flex-direction: column; justify-content: center; z-index: 5;">
+                <div class="rpg-dialog-box">
+                  <span class="rpg-title-tag">PATRIMÔNIO FERROVIÁRIO HISTÓRICO</span>
+                  <h2 class="rpg-main-title">MAQUINISTA & MARIA FUMAÇA</h2>
+                  <p class="rpg-desc-text">
+                    O personagem representa a importância da <strong>Locomotiva Baldwin 310</strong>, de significado vital para o desenvolvimento de União da Vitória e Porto União. Relembra como o transporte ferroviário é um símbolo marcante e histórico da nossa terra.
+                  </p>
+                  <div class="rpg-stats-bar">
+                    <button class="hud-btn" onclick="window.GameAudio.playMariaFumacaTheme()">🚂 Apito da Maria Fumaça</button>
+                    <button class="hud-btn active" data-inspect="maria_fumaca">🔍 Ver Atributos RPG</button>
+                  </div>
+                </div>
+              </div>
+              <div class="char-stage-interactive">
+                <div class="train-steam-emitter" style="top: 25%; left: 35%;"></div>
+                <div class="blueprint-art-frame" style="width: 95%; height: 75%; border-color: var(--color-accent-gold);">
+                  <img src="assets/cenarios/maria_fumaca_cenario.png" class="blueprint-img" alt="Locomotiva 310 e Maquinista" style="cursor: zoom-in;" data-inspect="maria_fumaca" title="Clique para Zoom & Apito!">
+                </div>
+              </div>
+            </div>
+            <img class="slide-canvas-view" src="assets/slides/slide_10.png" alt="Slide 10 Canva">
+          </article>
+
+          <!-- SLIDE 11: MONGE JOÃO MARIA -->
+          <article class="slide" data-slide="11">
+            <div class="slide-game-screen">
+              <img src="assets/cenarios/fundo_3.png" class="game-bg-layer" alt="Morro da Cruz">
+              <div class="game-bg-tint"></div>
+              <div style="flex: 1.1; padding: 4% 5%; display: flex; flex-direction: column; justify-content: center; z-index: 5;">
+                <div class="rpg-dialog-box">
+                  <span class="rpg-title-tag">BOSS MÍSTICO</span>
+                  <h2 class="rpg-main-title">MONGE JOÃO MARIA</h2>
+                  <p class="rpg-desc-text">
+                    Representa a história dos monges peregrinos que passaram pelo Vale do Iguaçu, especialmente a figura sagrada do <strong>Monge João Maria</strong>, conhecido por seus ensinamentos religiosos e fontes abençoadas. Sua presença resgata as tradições e a fé popular do vale.
+                  </p>
+                  <div class="rpg-stats-bar">
+                    <button class="hud-btn" onclick="window.GameAudio.playMongeTheme()">📿 Tocar Sino Sagrado</button>
+                    <button class="hud-btn active" data-inspect="monge">🔍 Ver Atributos do Boss</button>
+                  </div>
+                </div>
+              </div>
+              <div class="char-stage-interactive">
+                <div class="monge-halo"></div>
+                <div class="magic-pedestal" style="background: radial-gradient(ellipse at center, rgba(226, 183, 69, 0.7), transparent 70%);"></div>
+                <img src="assets/personagens/monge.png" class="char-sprite-loop char-monge-loop" data-inspect="monge" alt="Monge">
+              </div>
+            </div>
+            <img class="slide-canvas-view" src="assets/slides/slide_11.png" alt="Slide 11 Canva">
+          </article>
+
+          <!-- SLIDE 12: DIABO DO CLUBE FLORESTA -->
+          <article class="slide" data-slide="12">
+            <div class="slide-game-screen">
+              <img src="assets/cenarios/cenario_9.png" class="game-bg-layer" alt="Salão Sombrio do Baile">
+              <div class="game-bg-tint"></div>
+              <div style="flex: 1.1; padding: 4% 5%; display: flex; flex-direction: column; justify-content: center; z-index: 5;">
+                <div class="rpg-dialog-box" style="border-color: var(--color-accent-red);">
+                  <span class="rpg-title-tag" style="color: var(--color-accent-red); border-color: var(--color-accent-red);">LENDA URBANA ATERRADORA</span>
+                  <h2 class="rpg-main-title" style="color: #ff6666;">DIABO DO CLUBE FLORESTA</h2>
+                  <p class="rpg-desc-text">
+                    Representa a conhecida lenda do <strong>Diabo do Baile do Clube Floresta</strong>, uma história misteriosa e marcante em nossas cidades sobre o homem sedutor que dançou e revelou pés de cabra antes de desaparecer em fumaça.
+                  </p>
+                  <div class="rpg-stats-bar">
+                    <button class="hud-btn" onclick="window.GameAudio.playDiaboTheme()">👹 Ouvir Riso Sombrio</button>
+                    <button class="hud-btn active" data-inspect="diabo">🔍 Ver Atributos do Boss</button>
+                  </div>
+                </div>
+              </div>
+              <div class="char-stage-interactive">
+                <div class="diabo-fire-ring"></div>
+                <img src="assets/personagens/diabo.png" class="char-sprite-loop char-diabo-loop" data-inspect="diabo" alt="Diabo">
+              </div>
+            </div>
+            <img class="slide-canvas-view" src="assets/slides/slide_12.png" alt="Slide 12 Canva">
+          </article>
+
+          <!-- SLIDE 13: COBRA - LENDA DO RIO IGUAÇU -->
+          <article class="slide" data-slide="13">
+            <div class="slide-game-screen">
+              <img src="assets/cenarios/cenario_10.png" class="game-bg-layer" alt="Águas Turvas do Rio Iguaçu">
+              <div class="game-bg-tint"></div>
+              <div style="flex: 1.1; padding: 4% 5%; display: flex; flex-direction: column; justify-content: center; z-index: 5;">
+                <div class="rpg-dialog-box" style="border-color: var(--color-accent-cyan);">
+                  <span class="rpg-title-tag" style="color: var(--color-accent-cyan); border-color: var(--color-accent-cyan);">O MONSTRO DO RIO</span>
+                  <h2 class="rpg-main-title" style="color: #66e6ff;">COBRA DO RIO IGUAÇÚ</h2>
+                  <p class="rpg-desc-text">
+                    Representa a mítica <strong>serpente gigante adormecida no leito do Rio Iguaçu</strong>. Diz a tradição que um dia ela despertará e causará uma enchente histórica e avassaladora na região.
+                  </p>
+                  <div class="rpg-stats-bar">
+                    <button class="hud-btn" onclick="window.GameAudio.playCobraTheme()">🐍 Ouvir Tsunami & Sibilo</button>
+                    <button class="hud-btn active" data-inspect="cobra">🔍 Ver Atributos do Boss</button>
+                  </div>
+                </div>
+              </div>
+              <div class="char-stage-interactive">
+                <div class="water-ripple"></div>
+                <img src="assets/personagens/cobra.png" class="char-sprite-loop char-cobra-loop" data-inspect="cobra" alt="Cobra">
+              </div>
+            </div>
+            <img class="slide-canvas-view" src="assets/slides/slide_13.png" alt="Slide 13 Canva">
+          </article>
+
+          <!-- SLIDE 14: NPCS -->
+          <article class="slide" data-slide="14">
+            <div class="slide-game-screen">
+              <img src="assets/cenarios/cenario_2.png" class="game-bg-layer" alt="Cidades Gêmeas Vivas">
+              <div class="game-bg-tint"></div>
+              <div style="flex: 1.1; padding: 4% 5%; display: flex; flex-direction: column; justify-content: center; z-index: 5;">
+                <div class="rpg-dialog-box">
+                  <span class="rpg-title-tag">MUNDO VIVO & INTERATIVIDADE</span>
+                  <h2 class="rpg-main-title">NPCS (MORADORES)</h2>
+                  <p class="rpg-desc-text">
+                    Os <strong>NPCs (Non-Player Characters)</strong> enriquecem o mundo do jogo trazendo interatividade, curiosidades históricas e pistas sobre as lendas locais, conectando o jogador com a cultura viva de União da Vitória e Porto União.
+                  </p>
+                </div>
+              </div>
+              <div class="char-stage-interactive">
+                <div class="npc-dialog-bubble">"Cuidado com a grande cheia do Iguaçu, viajante!"</div>
+                <img src="assets/personagens/maquinista_transparent.png" class="char-sprite-loop char-gaucho-loop" style="max-height: 55%;" alt="NPC">
+              </div>
+            </div>
+            <img class="slide-canvas-view" src="assets/slides/slide_14.png" alt="Slide 14 Canva">
+          </article>
+
+          <!-- SLIDE 15: CENÁRIOS -->
+          <article class="slide" data-slide="15">
+            <div class="slide-game-screen">
+              <img src="assets/cenarios/fundo_4.png" class="game-bg-layer" alt="Cenários do Vale">
+              <div class="game-bg-tint"></div>
+              <div style="flex: 1.1; padding: 4% 5%; display: flex; flex-direction: column; justify-content: center; z-index: 5;">
+                <div class="rpg-dialog-box">
+                  <span class="rpg-title-tag">PONTOS TURÍSTICOS REAIS</span>
+                  <h2 class="rpg-main-title">CENÁRIOS DO JOGO</h2>
+                  <p class="rpg-desc-text">
+                    Inspirados em paisagens reais que carregam a história e a alma das nossas cidades: <strong>Ponte do Arco, Estação Ferroviária, margens do Rio Iguaçu, os morros e os casarões coloniais</strong>.
+                  </p>
+                </div>
+              </div>
+              <div class="char-stage-interactive">
+                <div class="blueprint-art-frame">
+                  <img src="assets/cenarios/cenario_1.png" class="blueprint-img" alt="Cenário Ponte do Arco">
+                </div>
+              </div>
+            </div>
+            <img class="slide-canvas-view" src="assets/slides/slide_15.png" alt="Slide 15 Canva">
+          </article>
+
+          <!-- SLIDE 16: MARKETING -->
+          <article class="slide" data-slide="16">
+            <div class="slide-game-screen">
+              <img src="assets/cenarios/cenario_10.png" class="game-bg-layer" alt="Redes Sociais">
+              <div class="game-bg-tint"></div>
+              <div style="flex: 1.05; padding: 4% 5%; display: flex; flex-direction: column; justify-content: center; z-index: 5;">
+                <div class="rpg-dialog-box">
+                  <span class="rpg-title-tag">COMUNICAÇÃO & REDES SOCIAIS</span>
+                  <h2 class="rpg-main-title">MARKETING</h2>
+                  <p class="rpg-desc-text">
+                    Divulgação e comunicação do Projeto Integrador por meio das redes sociais (principalmente pelo Instagram oficial <strong>@lendasdovale.pi2026</strong>).
+                  </p>
+                  <p class="rpg-desc-text">
+                    Objetivo de apresentar o desenvolvimento ao público, compartilhar atualizações, mostrar a rotina dos alunos nas 6 áreas e engajar a comunidade das cidades gêmeas.
+                  </p>
+                  <div class="rpg-stats-bar">
+                    <a href="https://www.instagram.com/lendasdovale.pi2026/" target="_blank" rel="noopener noreferrer" class="hud-btn active" style="text-decoration: none;">
+                      📷 @lendasdovale.pi2026
+                    </a>
+                    <div class="stat-box"><span class="stat-label">EQUIPE</span><span class="stat-value">Anna, Julia Lúcio, Alana, Gabrieli</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="char-stage-interactive">
+                <div class="marketing-video-container">
+                  <div class="marketing-video-topbar">
+                    <span class="m-video-tag">VÍDEO DE DIVULGAÇÃO &bull; REELS</span>
+                    <span style="font-size: 10px; color: var(--color-text-muted);">@lendasdovale.pi2026</span>
+                  </div>
+                  <video id="marketing-video-player" class="marketing-video-element" src="assets/videos/marketing_video.mp4" playsinline controls></video>
+                </div>
+              </div>
+            </div>
+            <img class="slide-canvas-view" src="assets/slides/slide_16.png" alt="Slide 16 Canva">
+          </article>
+
+          <!-- SLIDE 17: SONORO -->
+          <article class="slide" data-slide="17">
+            <div class="slide-game-screen">
+              <img src="assets/cenarios/fundo_4.png" class="game-bg-layer" alt="Áudio e Trilha Sonora">
+              <div class="game-bg-tint"></div>
+              <div style="flex: 1.1; padding: 4% 5%; display: flex; flex-direction: column; justify-content: center; z-index: 5;">
+                <div class="rpg-dialog-box">
+                  <span class="rpg-title-tag">ATMOSFERA & IMERSÃO</span>
+                  <h2 class="rpg-main-title">SETOR SONORO</h2>
+                  <p class="rpg-desc-text">
+                    Criação, seleção e implementação de <strong>efeitos sonoros, sons ambientes, passos, vento, chuva torrencial e trilhas musicais adaptativas</strong> para potencializar a jogabilidade e a emoção do jogador.
+                  </p>
+                  <div class="audio-visualizer-bars">
+                    <div class="equalizer-bar"></div>
+                    <div class="equalizer-bar"></div>
+                    <div class="equalizer-bar"></div>
+                    <div class="equalizer-bar"></div>
+                    <div class="equalizer-bar"></div>
+                    <div class="equalizer-bar"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="char-stage-interactive">
+                <button class="hud-btn active" onclick="window.GameAudio.playSlideChange(); window.GameAudio.playZoomIn();" style="padding: 16px 24px; font-family: var(--font-retro); font-size: 11px;">
+                  TESTAR SFX RETRÔ 🔊
+                </button>
+              </div>
+            </div>
+            <img class="slide-canvas-view" src="assets/slides/slide_17.png" alt="Slide 17 Canva">
+          </article>
+
+          <!-- SLIDE 18: PROGRAMAÇÃO DO SITE -->
+          <article class="slide" data-slide="18">
+            <div class="slide-game-screen">
+              <img src="assets/cenarios/cenario_6.png" class="game-bg-layer" alt="Programação Web">
+              <div class="game-bg-tint"></div>
+              <div style="flex: 1.1; padding: 4% 5%; display: flex; flex-direction: column; justify-content: center; z-index: 5;">
+                <div class="rpg-dialog-box">
+                  <span class="rpg-title-tag">PORTAL WEB DA COMUNIDADE</span>
+                  <h2 class="rpg-main-title">PROGRAMAÇÃO DO SITE</h2>
+                  <p class="rpg-desc-text">
+                    O grupo de Programação do Site desenvolveu o portal oficial para apresentar o jogo, download da versão executável, fórum de comunidade e feedbacks dos jogadores.
+                  </p>
+                  
+                  <!-- Banner em Super Destaque do Site Oficial -->
+                  <div class="site-highlight-banner">
+                    <div class="site-highlight-badge">🟢 PLATAFORMA OFICIAL NO AR</div>
+                    <div class="site-highlight-url">pijogo2026.alwaysdata.net</div>
+                    <a href="http://pijogo2026.alwaysdata.net" target="_blank" rel="noopener noreferrer" class="site-visit-btn">
+                      <span>🌐 ACESSAR O SITE AGORA</span>
+                      <span>↗</span>
+                    </a>
+                  </div>
+
+                  <div class="rpg-stats-bar" style="margin-top: 14px;">
+                    <div class="stat-box"><span class="stat-label">EQUIPE</span><span class="stat-value">Guilherme, Ricardo, José, Julia Lima</span></div>
+                    <div class="stat-box"><span class="stat-label">STACK</span><span class="stat-value">PHP 8.2 &bull; MySQL &bull; Alwaysdata</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="char-stage-interactive">
+                <!-- Mockup de Navegador Web com a Interface Real dos Alunos -->
+                <div class="browser-mockup-frame">
+                  <div class="browser-mockup-topbar">
+                    <div class="browser-dots">
+                      <span class="b-dot red"></span>
+                      <span class="b-dot yellow"></span>
+                      <span class="b-dot green"></span>
+                    </div>
+                    <div class="browser-address-bar highlight-url">
+                      <span class="b-lock">🔒</span>
+                      <span>http://pijogo2026.alwaysdata.net</span>
+                    </div>
+                  </div>
+                  <div class="browser-mockup-content">
+                    <div class="site-preview-nav">
+                      <span class="site-preview-logo">🌿 LENDAS DO VALE</span>
+                      <div class="site-preview-links">
+                        <span class="active">Home</span>
+                        <span>Comunidade</span>
+                        <span>Sobre</span>
+                        <span class="highlight">Download</span>
+                        <span>Login</span>
+                      </div>
+                    </div>
+                    <div class="site-preview-hero">
+                      <div class="site-preview-text">
+                        <h4>PORTAL DA COMUNIDADE</h4>
+                        <p>Explore as lendas das Cidades Gêmeas em 2D.</p>
+                        <div class="site-code-badge">&lt;?php echo "PI Terceirão 2026"; ?&gt;</div>
+                      </div>
+                      <img src="assets/personagens/emblema_transparent.png" class="site-preview-emblem" alt="Logo Site">
+                    </div>
+                    <div class="site-code-terminal">
+                      <span class="terminal-line"><span class="t-green">✔ Servidor:</span> Alwaysdata Cloud (PHP 8.2 + MariaDB)</span>
+                      <span class="terminal-line"><span class="t-cyan">&gt; Domínio:</span> pijogo2026.alwaysdata.net</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <img class="slide-canvas-view" src="assets/slides/slide_18.png" alt="Slide 18 Canva">
+          </article>
+
+          <!-- SLIDE 19: PROGRAMAÇÃO DO JOGO -->
+          <article class="slide" data-slide="19">
+            <div class="slide-game-screen">
+              <img src="assets/cenarios/cenario_5.png" class="game-bg-layer" alt="Engine Godot">
+              <div class="game-bg-tint"></div>
+              <div style="flex: 1.1; padding: 4% 5%; display: flex; flex-direction: column; justify-content: center; z-index: 5;">
+                <div class="rpg-dialog-box">
+                  <span class="rpg-title-tag">GODOT ENGINE & GDSCRIPT</span>
+                  <h2 class="rpg-main-title">PROGRAMAÇÃO DO JOGO</h2>
+                  <p class="rpg-desc-text">
+                    Desenvolvimento das mecânicas, física de colisões, movimentação 2D, lógica de inteligência artificial dos chefes, integração sonora e testes de desempenho.
+                  </p>
+                  <div class="rpg-stats-bar">
+                    <div class="stat-box"><span class="stat-label">ENGINE</span><span class="stat-value">Godot Engine 2D</span></div>
+                    <div class="stat-box"><span class="stat-label">LINGUAGEM</span><span class="stat-value">GDScript</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="char-stage-interactive">
+                <div class="blueprint-art-frame">
+                  <img src="assets/cenarios/cenario_5.png" class="blueprint-img" alt="Godot Game Mechanics">
+                </div>
+              </div>
+            </div>
+            <img class="slide-canvas-view" src="assets/slides/slide_19.png" alt="Slide 19 Canva">
+          </article>
+
+          <!-- SLIDE 20: CONCLUSÃO E AGRADECIMENTOS -->
+          <article class="slide" data-slide="20">
+            <div class="slide-game-screen">
+              <img src="assets/cenarios/fundo_1.png" class="game-bg-layer" alt="Final Triunfal">
+              <div class="game-bg-tint"></div>
+              <div style="flex: 1.1; display: flex; flex-direction: column; justify-content: center; padding: 5% 6%; z-index: 5;">
+                <span class="rpg-title-tag">★ MISSÃO CONCLUÍDA ★</span>
+                <h1 class="rpg-main-title" style="font-size: clamp(2rem, 3.5vw, 3.2rem);">OBRIGADO A TODOS!</h1>
+                <h2 style="font-family: var(--font-sans); font-size: 1.4rem; color: var(--color-accent-gold); margin-bottom: 12px;">TERCEIRÃO SESC SENAC 2026</h2>
+                <p class="rpg-desc-text" style="max-width: 560px;">
+                  Agradecemos a todos os professores, avaliadores e colegas. <strong>Lendas do Vale</strong> é a nossa homenagem às memórias e histórias que tornam as cidades gêmeas inesquecíveis!
+                </p>
+              </div>
+              <div class="char-stage-interactive">
+                <div class="emblem-pulse-ring" style="width: 380px; height: 380px;"></div>
+                <img src="assets/personagens/emblema_transparent.png" class="char-sprite-loop char-gaucho-loop" style="max-width: 75%;">
+              </div>
+            </div>
+            <img class="slide-canvas-view" src="assets/slides/slide_20.png" alt="Slide 20 Canva">
+          </article>
+
+        </div>
+      </div>
+    </main>
+
+    <!-- HUD INFERIOR -->
+    <footer class="bottom-hud">
+      <div class="slide-nav-arrows">
+        <button id="btn-prev" class="nav-arrow-btn" title="Slide Anterior (Seta Esquerda ou Backspace)">
+          <span>◀</span>
+          <span>ANTERIOR</span>
+        </button>
+        <button id="btn-next" class="nav-arrow-btn" title="Próximo Slide (Seta Direita ou Espaço)">
+          <span>PRÓXIMO</span>
+          <span>▶</span>
+        </button>
+      </div>
+
+      <div class="nav-indicators" id="nav-indicators"></div>
+
+      <div class="bottom-zoom-controls">
+        <button id="btn-zoom-out" class="hud-btn hud-btn-icon-only" title="Diminuir Zoom (Tecla -)">−</button>
+        <button id="btn-zoom-reset" class="hud-btn" style="min-width: 64px;" title="Redefinir Zoom (Tecla 0)">100%</button>
+        <button id="btn-zoom-in" class="hud-btn hud-btn-icon-only" title="Aumentar Zoom (Tecla +)">+</button>
+      </div>
+    </footer>
+
+    <div class="shortcuts-badge">
+      <span>Navegar: <kbd>→</kbd> <kbd>←</kbd> | Alternar Estilo: <kbd>V</kbd> | Zoom: <kbd>Z</kbd> | Lupa: <kbd>L</kbd> | Música: <kbd>B</kbd></span>
+    </div>
+
+    <!-- MODAL DE ZOOM / INSPETOR RPG -->
+    <div id="inspector-modal" class="inspector-modal">
+      <div class="inspector-content">
+        <button id="btn-close-inspector" class="inspector-close-btn" title="Fechar (ESC)">&times;</button>
+        <div class="inspector-left">
+          <span id="inspector-tag" class="inspector-tag">TAG</span>
+          <h2 id="inspector-title" class="inspector-title">Título</h2>
+          <p id="inspector-text" class="inspector-text">Descrição</p>
+          <div class="inspector-lore-box">
+            <strong>Memória do Vale: </strong>
+            <span id="inspector-lore-text">Lore histórica da região.</span>
+          </div>
+          <div id="inspector-stats" class="inspector-stats-grid"></div>
+        </div>
+        <div class="inspector-right">
+          <img id="inspector-zoom-img" class="inspector-zoom-display" src="" alt="Zoom Pixel Art">
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL DE VISÃO GERAL (OVERVIEW GRID) -->
+    <div id="overview-modal" class="overview-modal">
+      <div class="overview-header">
+        <div class="overview-title">📑 MAPA DA APRESENTAÇÃO - SELECIONE UM SLIDE</div>
+        <button id="btn-close-overview" class="hud-btn" style="font-family: var(--font-retro); font-size: 10px;">FECHAR [ESC]</button>
+      </div>
+      <div id="overview-grid" class="overview-grid"></div>
+    </div>
+  </div>
+
+  <script src="js/apresentacao_audio.js"></script>
+  <script src="js/apresentacao_main.js"></script>
+</body>
+</html>

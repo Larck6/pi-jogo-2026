@@ -29,6 +29,7 @@ pi/
 ├── index.php                       # Página inicial (Home reformulada)
 ├── style-preview.html              # Guia de estilos e componentes visuais
 ├── Prints/                         # Mídias e artes de bosses, fundos e scroll do jogo
+├── apresentacao/                   # Apresentação interativa oficial (20 slides, áudio e vídeo)
 ├── css/
 │   ├── style.css                   # Folha de estilos base
 │   ├── style_home.css              # Estilos exclusivos da página inicial

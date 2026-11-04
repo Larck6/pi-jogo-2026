@@ -753,3 +753,116 @@ img.imglenda {
     line-height: 1.6;
   }
 }
+
+
+/* =========================================================
+   APRESENTAÇÃO INTERATIVA DO PROJETO (EMBEDDED)
+   ========================================================= */
+.apresentacao-section {
+  width: 100%;
+  margin: 0 0 44px;
+  padding: 30px;
+  background: rgba(18, 24, 27, 0.94);
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(8px);
+}
+
+.apresentacao-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.apresentacao-copy {
+  max-width: 720px;
+}
+
+.apresentacao-copy span {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.apresentacao-copy h2 {
+  margin: 0 0 8px;
+  color: var(--text-main);
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  line-height: 1.2;
+}
+
+.apresentacao-copy p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.98rem;
+  line-height: 1.6;
+}
+
+.apresentacao-link-fullscreen {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 20px;
+  color: var(--text-main);
+  background: var(--surface-hover);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  font-weight: 650;
+  font-size: 0.92rem;
+  text-decoration: none;
+  transition: transform 0.18s ease, border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+
+.apresentacao-link-fullscreen:hover,
+.apresentacao-link-fullscreen:focus-visible {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent-hover);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.apresentacao-frame-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 580px;
+  background: #000;
+  border: 1px solid var(--border-color);
+  border-radius: calc(var(--radius) - 2px);
+  overflow: hidden;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+}
+
+.apresentacao-frame-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .apresentacao-section {
+    padding: 20px 16px;
+  }
+  .apresentacao-frame-wrapper {
+    min-height: 380px;
+  }
+  .apresentacao-link-fullscreen {
+    width: 100%;
+  }
+}
