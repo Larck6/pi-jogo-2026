@@ -531,3 +531,155 @@ class SoundEngine {
 
 // Instância global do motor de som
 window.GameAudio = new SoundEngine();
+
+
+/* ============================================================================
+ * LENDAS DO VALE - JUKEBOX & YOUTUBE MODAL CONTROLLER
+ * Reprodução dos 4 áudios reais do Setor Sonoro e vídeo do YouTube.
+ * ============================================================================
+ */
+
+(function() {
+  const audioTracks = [
+    { id: 1, name: "Efeito Sonoro • Interface", file: "assets/audio/audio_1_sfx_interface.wav" },
+    { id: 2, name: "Ambiente • Tempestade no Vale", file: "assets/audio/audio_2_tempestade_chuva.mp3" },
+    { id: 3, name: "Efeito Sonoro • Combate", file: "assets/audio/audio_3_sfx_combate.mp3" },
+    { id: 4, name: "Atmosfera • Noite no Vale", file: "assets/audio/audio_4_atmosfera_vale.mp3" }
+  ];
+
+  let currentAudio = null;
+  let currentTrackId = -1;
+
+  window.playJukeboxTrack = function(trackId) {
+    const track = audioTracks.find(t => t.id === trackId);
+    if (!track) return;
+
+    const statusEl = document.getElementById("jukebox-status-text");
+    const visualizer = document.getElementById("jukebox-visualizer");
+
+    // Pausa BGM procedual se estiver rodando
+    if (window.GameAudio && window.GameAudio.isPlayingBgm) {
+      window.GameAudio.stopBgm();
+      const btnBgm = document.getElementById("btn-bgm");
+      if (btnBgm) btnBgm.classList.remove("active");
+    }
+
+    // Se já estiver tocando essa mesma faixa, pausa
+    if (currentTrackId === trackId && currentAudio && !currentAudio.paused) {
+      currentAudio.pause();
+      updateTrackUI(-1);
+      if (statusEl) statusEl.textContent = "⏸ Faixa pausada";
+      if (visualizer) visualizer.classList.remove("active");
+      return;
+    }
+
+    // Se já estiver pausada essa mesma faixa, despausa
+    if (currentTrackId === trackId && currentAudio && currentAudio.paused) {
+      currentAudio.play().then(() => {
+        updateTrackUI(trackId);
+        if (visualizer) visualizer.classList.add("active");
+        if (statusEl) statusEl.textContent = "▶ Tocando: " + track.name;
+      }).catch(err => console.warn(err));
+      return;
+    }
+
+    // Para faixa anterior se houver
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      currentAudio = null;
+    }
+
+    currentTrackId = trackId;
+    currentAudio = new Audio(track.file);
+    currentAudio.volume = 0.85;
+
+    currentAudio.play().then(() => {
+      updateTrackUI(trackId);
+      if (visualizer) visualizer.classList.add("active");
+      if (statusEl) statusEl.textContent = "▶ Tocando: " + track.name;
+    }).catch(err => {
+      console.warn("Erro ao tocar áudio:", err);
+      if (statusEl) statusEl.textContent = "Erro ao carregar áudio.";
+    });
+
+    currentAudio.onended = function() {
+      updateTrackUI(-1);
+      if (visualizer) visualizer.classList.remove("active");
+      if (statusEl) statusEl.textContent = "⏹ Concluído: " + track.name;
+      currentTrackId = -1;
+      currentAudio = null;
+    };
+  };
+
+  window.stopAllJukeboxTracks = function() {
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      currentAudio = null;
+    }
+    currentTrackId = -1;
+    updateTrackUI(-1);
+    const statusEl = document.getElementById("jukebox-status-text");
+    const visualizer = document.getElementById("jukebox-visualizer");
+    if (statusEl) statusEl.textContent = "⏹ Áudios parados";
+    if (visualizer) visualizer.classList.remove("active");
+  };
+
+  function updateTrackUI(activeId) {
+    for (let i = 1; i <= 4; i++) {
+      const row = document.getElementById("track-item-" + i);
+      const btn = document.getElementById("track-btn-" + i);
+      if (row && btn) {
+        if (i === activeId) {
+          row.classList.add("playing");
+          btn.textContent = "⏸";
+          btn.classList.add("active");
+        } else {
+          row.classList.remove("playing");
+          btn.textContent = "▶";
+          btn.classList.remove("active");
+        }
+      }
+    }
+  }
+
+  // Controle do Modal YouTube
+  window.openYoutubeVideo = function(videoId, title) {
+    const modal = document.getElementById("youtube-video-modal");
+    const iframe = document.getElementById("youtube-iframe-player");
+    const titleEl = document.getElementById("youtube-modal-title");
+
+    if (window.stopAllJukeboxTracks) window.stopAllJukeboxTracks();
+    if (window.GameAudio && window.GameAudio.isPlayingBgm) {
+      window.GameAudio.stopBgm();
+      const btnBgm = document.getElementById("btn-bgm");
+      if (btnBgm) btnBgm.classList.remove("active");
+    }
+
+    if (titleEl) titleEl.textContent = title || "Vídeo";
+    if (iframe) iframe.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1&rel=0";
+    if (modal) {
+      modal.style.display = "flex";
+      modal.classList.add("open");
+    }
+  };
+
+  window.closeYoutubeVideo = function() {
+    const modal = document.getElementById("youtube-video-modal");
+    const iframe = document.getElementById("youtube-iframe-player");
+    if (iframe) iframe.src = "";
+    if (modal) {
+      modal.style.display = "none";
+      modal.classList.remove("open");
+    }
+  };
+
+  // Fecha clicando fora da caixa do modal
+  document.addEventListener("click", function(e) {
+    const modal = document.getElementById("youtube-video-modal");
+    if (modal && e.target === modal) {
+      window.closeYoutubeVideo();
+    }
+  });
+})();

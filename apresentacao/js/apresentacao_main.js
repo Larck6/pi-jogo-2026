@@ -227,6 +227,8 @@ document.addEventListener('DOMContentLoaded', () => {
      NAVEGAÇÃO ENTRE SLIDES
      ------------------------------------------------------------- */
   function goToSlide(slideNum) {
+    if (window.stopAllJukeboxTracks) window.stopAllJukeboxTracks();
+    if (window.closeYoutubeVideo) window.closeYoutubeVideo();
     if (slideNum < 1 || slideNum > state.totalSlides) return;
     if (slideNum === state.currentSlide && document.querySelector(`.slide[data-slide="${slideNum}"]`).classList.contains('active')) return;
 
@@ -592,6 +594,10 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('keydown', (e) => {
     // Se o inspetor ou modal estiver aberto, ESC fecha
     if (e.key === 'Escape') {
+      if (document.getElementById('youtube-video-modal') && document.getElementById('youtube-video-modal').classList.contains('open')) {
+        window.closeYoutubeVideo();
+        return;
+      }
       if (inspectorModal.classList.contains('open')) {
         closeInspector();
         return;

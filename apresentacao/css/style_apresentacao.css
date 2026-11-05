@@ -1499,3 +1499,302 @@ kbd {
   .inspector-content { flex-direction: column; max-height: 90vh; }
   .inspector-right { height: 260px; }
 }
+
+
+/* ==========================================
+   SLIDE 17: DESTAQUE TRILHA SONORA & JUKEBOX
+   ========================================== */
+
+/* Card Música Tema */
+.music-highlight-card {
+  margin-top: 10px;
+  padding: 12px 14px;
+  background: rgba(16, 22, 19, 0.9);
+  border: 1px solid rgba(220, 53, 69, 0.45);
+  border-left: 3px solid #e53935;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.music-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.music-tag-badge {
+  font-family: var(--font-retro);
+  font-size: 8px;
+  color: #ff5252;
+  letter-spacing: 0.5px;
+}
+
+.music-author-tag {
+  font-size: 10px;
+  color: var(--color-gold);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.music-title {
+  font-family: var(--font-cinzel);
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 0.5px;
+  margin-bottom: 3px;
+}
+
+.music-desc {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  line-height: 1.35;
+  margin: 0 0 8px;
+}
+
+.music-button-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-yt-modal {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #c62828;
+  color: #fff;
+  border: 1px solid #ef5350;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-family: var(--font-retro);
+  font-size: 9px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-yt-modal:hover {
+  background: #e53935;
+  transform: translateY(-1px);
+  box-shadow: 0 0 12px rgba(229, 57, 53, 0.6);
+}
+
+.btn-yt-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-text-main);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-family: var(--font-retro);
+  font-size: 9px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-yt-link:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: #fff;
+  color: #fff;
+}
+
+/* Painel Jukebox */
+.audio-jukebox-panel {
+  width: 100%;
+  max-width: 480px;
+  background: rgba(11, 19, 15, 0.94);
+  border: 1px solid rgba(77, 238, 234, 0.35);
+  border-radius: 8px;
+  padding: 14px 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(77, 238, 234, 0.05);
+  backdrop-filter: blur(8px);
+}
+
+.jukebox-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(77, 238, 234, 0.2);
+  margin-bottom: 10px;
+}
+
+.jukebox-title-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-retro);
+  font-size: 11px;
+  color: var(--color-accent-cyan);
+}
+
+.mini-bars {
+  margin-top: 0;
+  height: 22px;
+}
+
+.mini-bars .equalizer-bar {
+  width: 4px;
+  animation-play-state: paused;
+}
+
+.mini-bars.active .equalizer-bar {
+  animation-play-state: running;
+}
+
+.jukebox-tracks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.jukebox-track-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.jukebox-track-row:hover {
+  background: rgba(77, 238, 234, 0.08);
+  border-color: rgba(77, 238, 234, 0.4);
+  transform: translateX(3px);
+}
+
+.jukebox-track-row.playing {
+  background: rgba(77, 238, 234, 0.14);
+  border-color: var(--color-accent-cyan);
+  box-shadow: 0 0 10px rgba(77, 238, 234, 0.25);
+}
+
+.track-num-badge {
+  font-family: var(--font-retro);
+  font-size: 9px;
+  color: var(--color-gold);
+  background: rgba(0, 0, 0, 0.4);
+  padding: 3px 6px;
+  border-radius: 4px;
+}
+
+.track-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.track-heading {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.track-sub {
+  font-size: 0.70rem;
+  color: var(--color-text-muted);
+  margin-top: 1px;
+}
+
+.track-btn {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(77, 238, 234, 0.4);
+  color: var(--color-accent-cyan);
+  border-radius: 4px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.track-btn.active {
+  background: var(--color-accent-cyan);
+  color: #000;
+  box-shadow: 0 0 8px rgba(77, 238, 234, 0.8);
+}
+
+.jukebox-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.jukebox-stop-action {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--color-text-muted);
+  font-family: var(--font-retro);
+  font-size: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.jukebox-stop-action:hover {
+  border-color: #ff5252;
+  color: #ff5252;
+}
+
+/* Modal YouTube */
+.youtube-modal-container {
+  width: min(880px, 92vw);
+  background: #000;
+  border: 2px solid var(--color-accent-cyan);
+  border-radius: 8px;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(77, 238, 234, 0.3);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.youtube-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: #111;
+  border-bottom: 1px solid #222;
+}
+
+.youtube-modal-title {
+  font-family: var(--font-retro);
+  font-size: 10px;
+  color: #ff5252;
+  letter-spacing: 0.5px;
+}
+
+.youtube-modal-iframe-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+
+.youtube-modal-iframe-wrap iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}

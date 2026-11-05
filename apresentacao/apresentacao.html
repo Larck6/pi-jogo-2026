@@ -517,27 +517,109 @@
             <div class="slide-game-screen">
               <img src="assets/cenarios/fundo_4.png" class="game-bg-layer" alt="Áudio e Trilha Sonora">
               <div class="game-bg-tint"></div>
-              <div style="flex: 1.1; padding: 4% 5%; display: flex; flex-direction: column; justify-content: center; z-index: 5;">
+              
+              <!-- LADO ESQUERDO: DETALHES E DESTAQUE DA TRILHA YOUTUBE -->
+              <div style="flex: 1.05; padding: 2% 3%; display: flex; flex-direction: column; justify-content: center; z-index: 5;">
                 <div class="rpg-dialog-box">
                   <span class="rpg-title-tag">ATMOSFERA & IMERSÃO</span>
                   <h2 class="rpg-main-title">SETOR SONORO</h2>
-                  <p class="rpg-desc-text">
-                    Criação, seleção e implementação de <strong>efeitos sonoros, sons ambientes, passos, vento, chuva torrencial e trilhas musicais adaptativas</strong> para potencializar a jogabilidade e a emoção do jogador.
+                  <p class="rpg-desc-text" style="margin-bottom: 8px;">
+                    Criação, seleção e implementação de <strong>efeitos sonoros, ambiência regional, passos, tempestade e trilhas musicais</strong> para potencializar a emoção do jogador.
                   </p>
-                  <div class="audio-visualizer-bars">
-                    <div class="equalizer-bar"></div>
-                    <div class="equalizer-bar"></div>
-                    <div class="equalizer-bar"></div>
-                    <div class="equalizer-bar"></div>
-                    <div class="equalizer-bar"></div>
-                    <div class="equalizer-bar"></div>
+                  
+                  <!-- CARD DESTAQUE: MÚSICA TEMA YOUTUBE -->
+                  <div class="music-highlight-card">
+                    <div class="music-badge-row">
+                      <span class="music-tag-badge">🎶 TRILHA SONORA DO JOGO</span>
+                      <span class="music-author-tag">QUARTETO CORAÇÃO DE POTRO</span>
+                    </div>
+                    <div class="music-title">Pala Rubro</div>
+                    <p class="music-desc">
+                      Trilha sonora tradicional gauchesca e regional que dá alma à atmosfera e às lendas do Vale do Iguaçu.
+                    </p>
+                    <div class="music-button-group">
+                      <button type="button" class="btn-yt-modal" onclick="window.openYoutubeVideo('sS7BoFn-v68', 'Quarteto Coração de Potro - Pala Rubro')">
+                        <span class="yt-play-icon">▶</span>
+                        <span>ASSISTIR CLIPE</span>
+                      </button>
+                      <a href="https://www.youtube.com/watch?v=sS7BoFn-v68" target="_blank" rel="noopener noreferrer" class="btn-yt-link" title="Abrir no YouTube">
+                        <span>YOUTUBE</span>
+                        <span>↗</span>
+                      </a>
+                    </div>
+                  </div>
+
+                  <div class="rpg-stats-bar" style="margin-top: 8px;">
+                    <div class="stat-box"><span class="stat-label">EQUIPE</span><span class="stat-value">Isabela, Ryan, José, Ricardo</span></div>
                   </div>
                 </div>
               </div>
-              <div class="char-stage-interactive">
-                <button class="hud-btn active" onclick="window.GameAudio.playSlideChange(); window.GameAudio.playZoomIn();" style="padding: 16px 24px; font-family: var(--font-retro); font-size: 11px;">
-                  TESTAR SFX RETRÔ 🔊
-                </button>
+
+              <!-- LADO DIREITO: JUKEBOX COM OS 4 ÁUDIOS REAIS -->
+              <div class="char-stage-interactive" style="flex: 0.95; padding: 2% 3%;">
+                <div class="audio-jukebox-panel">
+                  <div class="jukebox-header">
+                    <div class="jukebox-title-area">
+                      <span class="jukebox-icon">🎧</span>
+                      <span class="jukebox-title-text">JUKEBOX DO JOGO</span>
+                    </div>
+                    <div class="audio-visualizer-bars mini-bars" id="jukebox-visualizer">
+                      <div class="equalizer-bar"></div>
+                      <div class="equalizer-bar"></div>
+                      <div class="equalizer-bar"></div>
+                      <div class="equalizer-bar"></div>
+                      <div class="equalizer-bar"></div>
+                      <div class="equalizer-bar"></div>
+                    </div>
+                  </div>
+
+                  <div class="jukebox-tracks-list">
+                    <!-- FAIXA 1 -->
+                    <div class="jukebox-track-row" id="track-item-1" onclick="window.playJukeboxTrack(1)">
+                      <div class="track-num-badge">01</div>
+                      <div class="track-details">
+                        <div class="track-heading">Efeito Sonoro • Interface</div>
+                        <div class="track-sub">SFX do Jogo &bull; WAV &bull; 00:01</div>
+                      </div>
+                      <button type="button" class="track-btn" id="track-btn-1" aria-label="Reproduzir Faixa 1">▶</button>
+                    </div>
+
+                    <!-- FAIXA 2 -->
+                    <div class="jukebox-track-row" id="track-item-2" onclick="window.playJukeboxTrack(2)">
+                      <div class="track-num-badge">02</div>
+                      <div class="track-details">
+                        <div class="track-heading">Ambiente • Tempestade no Vale</div>
+                        <div class="track-sub">Chuva Torrencial e Trovões &bull; MP3 &bull; 00:35</div>
+                      </div>
+                      <button type="button" class="track-btn" id="track-btn-2" aria-label="Reproduzir Faixa 2">▶</button>
+                    </div>
+
+                    <!-- FAIXA 3 -->
+                    <div class="jukebox-track-row" id="track-item-3" onclick="window.playJukeboxTrack(3)">
+                      <div class="track-num-badge">03</div>
+                      <div class="track-details">
+                        <div class="track-heading">Efeito Sonoro • Combate</div>
+                        <div class="track-sub">Disparo & Impacto Histórico &bull; MP3 &bull; 00:01</div>
+                      </div>
+                      <button type="button" class="track-btn" id="track-btn-3" aria-label="Reproduzir Faixa 3">▶</button>
+                    </div>
+
+                    <!-- FAIXA 4 -->
+                    <div class="jukebox-track-row" id="track-item-4" onclick="window.playJukeboxTrack(4)">
+                      <div class="track-num-badge">04</div>
+                      <div class="track-details">
+                        <div class="track-heading">Atmosfera • Noite no Vale</div>
+                        <div class="track-sub">Vento e Mistério Noturno &bull; MP3 &bull; 00:40</div>
+                      </div>
+                      <button type="button" class="track-btn" id="track-btn-4" aria-label="Reproduzir Faixa 4">▶</button>
+                    </div>
+                  </div>
+
+                  <div class="jukebox-bottom-bar">
+                    <span id="jukebox-status-text">▶ Toque para ouvir as faixas</span>
+                    <button type="button" class="jukebox-stop-action" onclick="window.stopAllJukeboxTracks()">PARAR ⏹</button>
+                  </div>
+                </div>
               </div>
             </div>
             <img class="slide-canvas-view" src="assets/slides/slide_17.png" alt="Slide 17 Canva">
@@ -720,6 +802,19 @@
         <div class="overview-title">📑 MAPA DA APRESENTAÇÃO - SELECIONE UM SLIDE</div>
         <button id="btn-close-overview" class="hud-btn" style="font-family: var(--font-retro); font-size: 10px;">FECHAR [ESC]</button>
       </div>
+
+    <!-- MODAL DE VÍDEO DO YOUTUBE (PALA RUBRO) -->
+    <div id="youtube-video-modal" class="inspector-modal" style="display: none;">
+      <div class="youtube-modal-container">
+        <div class="youtube-modal-header">
+          <div class="youtube-modal-title" id="youtube-modal-title">Quarteto Coração de Potro - Pala Rubro</div>
+          <button type="button" class="inspector-close-btn" onclick="window.closeYoutubeVideo()" title="Fechar (ESC)">&times;</button>
+        </div>
+        <div class="youtube-modal-iframe-wrap">
+          <iframe id="youtube-iframe-player" src="" title="YouTube Video Player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
       <div id="overview-grid" class="overview-grid"></div>
     </div>
   </div>
